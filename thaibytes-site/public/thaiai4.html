@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>THAI AI</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <style>
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-thumb { background: #888; border-radius: 10px; }
+  </style>
+</head>
+<body class="bg-gray-900 text-white h-screen flex flex-col">
+  <!-- Header -->
+  <div class="bg-black flex items-center justify-between p-4">
+    <h1 class="text-xl font-bold">🤖 THAI AI Assistant</h1>
+    <div class="flex gap-2">
+      <button id="voiceToggle" class="bg-purple-500 text-white px-3 py-1 rounded">🔇 Voice OFF</button>
+      <button id="adminBtn" class="bg-yellow-500 text-black px-3 py-1 rounded">🛡️ Admin</button>
+    </div>
+  </div>
+
+  <!-- Chat Display -->
+  <div id="chatBox" class="flex-1 p-4 overflow-y-auto space-y-3"></div>
+
+  <!-- User Input -->
+  <div class="p-3 bg-black flex gap-2">
+    <input id="userInput" type="text" placeholder="Type in Tamil or English..." class="flex-1 p-2 rounded bg-gray-800 text-white" />
+    <button onclick="askTHAI()" class="bg-green-600 px-4 py-2 rounded">Ask</button>
+    <button onclick="startVoiceInput()" class="bg-blue-600 px-4 py-2 rounded">🎤</button>
+  </div>
+
+  <!-- Admin Panel -->
+  <div id="adminPanel" class="hidden fixed top-20 right-4 bg-gray-800 p-4 rounded-lg border border-white/20 max-h-[80vh] w-96 overflow-y-auto z-50">
+    <h2 class="text-lg font-bold mb-3">🛡️ Admin Logs</h2>
+    <!-- CSV Upload/Download -->
+<div class="mb-4">
+  <input type="file" id="csvFile" accept=".csv" class="block w-full mb-2 text-sm text-white bg-black border border-gray-500 rounded cursor-pointer" />
+  <button onclick="uploadCSV()" class="bg-blue-600 w-full py-1 rounded mb-2">📤 Upload CSV</button>
+  <button onclick="downloadCSV()" class="bg-yellow-500 w-full py-1 rounded">📥 Download CSV</button>
+</div>
+   <!-- Add New Q&A -->
+    <div class="mb-4">
+      <input id="newQ" type="text" placeholder="New Question" class="w-full mb-2 p-2 rounded bg-black text-white border border-gray-500" />
+      <textarea id="newA" placeholder="New Answer" class="w-full p-2 rounded bg-black text-white border border-gray-500 mb-2"></textarea>
+      <button onclick="addNewQA()" class="bg-green-600 w-full py-1 rounded">➕ Add to Firebase</button>
+    </div>
+    <ul id="logList" class="space-y-2 text-sm"></ul>
+  </div>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAmBGnTLSBnEuT4GUMBzX7Z_K7lAEDjx2c",
+      authDomain: "thai-bytes.firebaseapp.com",
+      projectId: "thai-bytes",
+      storageBucket: "thai-bytes.appspot.com",
+      messagingSenderId: "212605449568",
+      appId: "1:212605449568:web:8e170a40f1907d33cf1a05"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    const chatBox = document.getElementById("chatBox");
+    const inputBox = document.getElementById("userInput");
+    const voiceBtn = document.getElementById("voiceToggle");
+    const logList = document.getElementById("logList");
+
+    let voiceEnabled = false;
+
+    voiceBtn.onclick = () => {
+      voiceEnabled = !voiceEnabled;
+      voiceBtn.innerText = voiceEnabled ? "🔊 Voice ON" : "🔇 Voice OFF";
+      voiceBtn.classList.toggle("bg-purple-500", !voiceEnabled);
+      voiceBtn.classList.toggle("bg-green-600", voiceEnabled);
+    };
+
+    function appendChat(text, sender = 'user') {
+      const msg = document.createElement('div');
+      msg.className = sender === 'user'
+        ? "text-right bg-blue-700 max-w-[80%] ml-auto p-2 rounded-xl"
+        : "text-left bg-gray-700 max-w-[80%] mr-auto p-2 rounded-xl flex justify-between items-center";
+
+      if (sender === 'bot' && voiceEnabled) {
+        msg.innerHTML = `<span>${text}</span>
+          <button onclick="speakOut(\`${text.replace(/`/g, '\\`')}\`)" class="ml-2 text-yellow-400">🔊</button>`;
+      } else {
+        msg.innerText = text;
+      }
+
+      chatBox.appendChild(msg);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    async function askTHAI() {
+      const q = inputBox.value.trim();
+      if (!q) return;
+      const lowerQ = q.toLowerCase();
+      appendChat(q, 'user');
+      inputBox.value = "";
+
+      const loadingMsg = document.createElement('div');
+      loadingMsg.className = "text-left bg-gray-700 max-w-[80%] mr-auto p-2 rounded-xl animate-pulse";
+      loadingMsg.innerText = "⌛ Typing...";
+      chatBox.appendChild(loadingMsg);
+      chatBox.scrollTop = chatBox.scrollHeight;
+
+      let a = await getFromFirebase(lowerQ);
+      if (!a) a = await searchDuckDuckGo(lowerQ);
+      if (!a) a = await askGemini(lowerQ);  // Gemini API placeholder
+      if (!a) a = "மன்னிக்கவும், இதற்குப் பதில் இல்லை.";
+
+      loadingMsg.remove();
+      appendChat(a, 'bot');
+      if (voiceEnabled) speakOut(a);
+      saveToLog(lowerQ, a);
+    }
+
+    async function getFromFirebase(q) {
+      try {
+        const doc = await db.collection("thai_answers").doc(q).get();
+        return doc.exists ? doc.data().answer : null;
+      } catch (e) {
+        console.error("Firebase read error:", e);
+        return null;
+      }
+    }
+
+    async function saveToLog(q, a) {
+      try {
+        await db.collection("thai_logs").add({
+          question: q,
+          answer: a,
+          time: firebase.firestore.FieldValue.serverTimestamp()
+        });
+      } catch (e) {
+        console.error("Log error:", e);
+      }
+    }
+
+    async function searchDuckDuckGo(q) {
+      try {
+        const res = await fetch(`https://api.duckduckgo.com/?q=${encodeURIComponent(q)}&format=json&no_redirect=1&no_html=1&t=thai-ai`);
+        const data = await res.json();
+        if (data?.AbstractText) return `${data.AbstractText} (via DuckDuckGo)`;
+      } catch (e) {
+        console.error("DuckDuckGo error:", e);
+      }
+      return null;
+    }
+
+    async function askGemini(q) {
+      return null; // Gemini integration placeholder
+    }
+
+    function speakOut(text) {
+      const synth = window.speechSynthesis;
+      const utter = new SpeechSynthesisUtterance(text);
+      utter.lang = /[\u0B80-\u0BFF]/.test(text) ? "ta-IN" : "en-US";
+      synth.speak(utter);
+    }
+
+    function startVoiceInput() {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) return alert("❌ Voice not supported.");
+      const recognition = new SpeechRecognition();
+      recognition.lang = "ta-IN,en-IN";
+      recognition.interimResults = false;
+      recognition.onresult = e => {
+        inputBox.value = e.results[0][0].transcript;
+        askTHAI();
+      };
+      recognition.start();
+    }
+
+    document.getElementById("adminBtn").addEventListener("click", async () => {
+      const pass = prompt("Enter admin password:");
+      if (pass !== "thaiadmin123") return alert("❌ Access Denied");
+      const panel = document.getElementById("adminPanel");
+      panel.classList.toggle("hidden");
+      logList.innerHTML = "";
+      const snap = await db.collection("thai_logs").orderBy("time", "desc").limit(100).get();
+      snap.forEach(doc => {
+        const d = doc.data();
+        const date = d.time?.toDate()?.toLocaleString() || "N/A";
+        const li = document.createElement("li");
+        li.className = "bg-white/10 p-2 rounded";
+        li.innerHTML = `<strong>Q:</strong> ${d.question}<br>
+          <strong>A:</strong> <span id="a-${doc.id}">${d.answer || "❌"}</span><br>
+          <span class="text-xs text-gray-400">${date}</span><br>
+          <button onclick="editAnswer('${d.question.replace(/'/g, "\\'")}')" class="text-yellow-400 underline text-xs mt-1">✏️ Edit DB</button>
+          <button onclick="editLogAnswer('${doc.id}', '${d.answer.replace(/'/g, "\\'")}')" class="text-green-400 underline text-xs ml-2">✏️ Edit Log</button>
+          <button onclick="deleteQA('${d.question}')" class="text-red-400 underline text-xs ml-2">🗑️ Delete</button>`;
+        logList.appendChild(li);
+      });
+    });
+
+    async function editAnswer(q) {
+      const newA = prompt("Edit answer for:\n" + q);
+      if (newA) {
+        await db.collection("thai_answers").doc(q).set({
+          question: q,
+          answer: newA,
+          updated: new Date().toISOString()
+        });
+        alert("✅ Updated!");
+      }
+    }
+
+    async function editLogAnswer(id, oldAns) {
+      const newA = prompt("Edit answer in log:", oldAns);
+      if (newA) {
+        await db.collection("thai_logs").doc(id).update({ answer: newA });
+        document.getElementById(`a-${id}`).innerText = newA;
+        alert("✅ Log updated");
+      }
+    }
+
+    async function deleteQA(q) {
+      if (!confirm("Are you sure you want to delete this question from Firebase?")) return;
+      try {
+        await db.collection("thai_answers").doc(q).delete();
+        alert("✅ Deleted!");
+      } catch (e) {
+        console.error("Delete error:", e);
+        alert("❌ Error deleting");
+      }
+    }
+
+    async function addNewQA() {
+      const q = document.getElementById("newQ").value.trim().toLowerCase();
+      const a = document.getElementById("newA").value.trim();
+      if (!q || !a) return alert("Please enter both question and answer");
+      try {
+        await db.collection("thai_answers").doc(q).set({
+          question: q,
+          answer: a,
+          updated: new Date().toISOString()
+        });
+        alert("✅ Added successfully!");
+        document.getElementById("newQ").value = "";
+        document.getElementById("newA").value = "";
+      } catch (e) {
+        console.error("Add error:", e);
+        alert("❌ Error adding new QA.");
+      }
+    }
+
+   // Upload CSV to Firebase
+async function uploadCSV() {
+  const fileInput = document.getElementById("csvFile");
+  const file = fileInput.files[0];
+  if (!file) return alert("❗ Please select a CSV file.");
+
+  const reader = new FileReader();
+  reader.onload = async function (e) {
+    const text = e.target.result;
+    const lines = text.trim().split("\n");
+
+    let success = 0;
+    for (let i = 1; i < lines.length; i++) {
+      const [q, a] = lines[i].split(/,(.+)/); // Split only on the first comma
+      if (q && a) {
+        try {
+          await db.collection("thai_answers").doc(q.trim().toLowerCase()).set({
+            question: q.trim().toLowerCase(),
+            answer: a.trim(),
+            updated: new Date().toISOString()
+          });
+          success++;
+        } catch (err) {
+          console.error(`❌ Error saving line ${i + 1}:`, err);
+        }
+      }
+    }
+    alert(`✅ ${success} Q&A entries uploaded successfully.`);
+    fileInput.value = "";
+  };
+  reader.readAsText(file);
+}
+
+// Download all Q&A as CSV
+async function downloadCSV() {
+  try {
+    const snapshot = await db.collection("thai_answers").get();
+    let csvContent = "question,answer\n";
+
+    snapshot.forEach(doc => {
+      const data = doc.data();
+      const safeQ = (data.question || "").replace(/"/g, '""');
+      const safeA = (data.answer || "").replace(/"/g, '""');
+      csvContent += `"${safeQ}","${safeA}"\n`;
+    });
+
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.setAttribute("download", "thai_ai_qa_export.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    alert("✅ Downloaded as CSV");
+  } catch (e) {
+    console.error("Download error:", e);
+    alert("❌ Failed to download CSV");
+  }
+}
+    document.addEventListener('contextmenu', e => e.preventDefault());
+    document.onkeydown = e => {
+      if (["F12", "U"].includes(e.key.toUpperCase()) && e.ctrlKey) return false;
+      if (e.ctrlKey && e.shiftKey && ["I", "C", "J"].includes(e.key.toUpperCase())) return false;
+    };
+  </script>
+</body>
+</html>

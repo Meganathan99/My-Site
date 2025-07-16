@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Login - THAI BYTES</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen px-4">
+  <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+    <h1 class="text-3xl font-bold mb-6 text-center">🔐 Login</h1>
+    <form id="loginForm" class="space-y-4">
+      <input type="email" id="email" placeholder="Email" class="w-full border p-3 rounded text-lg" required />
+      <input type="password" id="password" placeholder="Password" class="w-full border p-3 rounded text-lg" required />
+      <button type="submit" class="w-full bg-yellow-500 py-3 rounded font-bold text-lg">Login</button>
+    </form>
+    <p class="text-center mt-4 text-lg">New user? <a href="signup.html" class="text-blue-600 underline">Sign up</a></p>
+  </div>
+
+  <!-- Firebase Config & Auth Logic -->
+  <script src="js/firebase-config.js"></script>
+  <script>
+    document.getElementById("loginForm")?.addEventListener("submit", function (e) {
+      e.preventDefault();
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+
+      firebase.auth().signInWithEmailAndPassword(email, password)
+        .then(() => {
+          alert("✅ Login Success");
+          window.location.href = "index.html";
+        })
+        .catch((error) => alert("❌ " + error.message));
+    });
+  </script>
+</body>
+</html>

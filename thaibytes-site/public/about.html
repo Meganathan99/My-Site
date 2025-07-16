@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>About - THAI BYTES</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+<style>
+  #particles-js {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1; /* push it behind all content */
+  }
+</style>
+</head>
+<body class="text-white min-h-screen bg-black">
+
+  <!-- 🎆 Animated Background -->
+  <div id="particles-js"></div>
+ <div class="backdrop-blur-sm bg-black/80 max-w-5xl mx-auto p-6 sm:p-10 rounded-2xl shadow-xl">
+    
+    <!-- Heading -->
+    <h1 class="text-4xl sm:text-6xl font-bold text-cyan-400 text-center mb-10">About Thai Bytes</h1>
+
+    <!-- Founder Info -->
+    <div class="flex flex-col sm:flex-row items-center sm:items-start gap-6 mb-8">
+      <img src="images/fn.jpg" alt="Founder Samiganesh" class="w-40 h-40 object-cover rounded-full border-4 border-cyan-400 shadow-lg">
+      <p class="text-xl sm:text-2xl text-cyan-100 leading-relaxed">
+        Thai Bytes was founded by <span class="text-yellow-300 font-semibold">Samiganesh</span> in <span class="text-yellow-300 font-semibold">Sivakasi</span> with a mission to provide reliable and affordable computer, networking, and cybersecurity services. Our goal is to empower individuals and small businesses with secure, optimized tech solutions.
+      </p>
+    </div>
+
+    <!-- Mission -->
+    <p class="text-xl sm:text-2xl text-cyan-100 leading-relaxed mb-6">
+      From basic PC repairs to advanced network setups, we offer top-tier service with transparency and trust. We believe technology should be accessible to all and work hard to bridge the digital gap through education, service, and innovation.
+    </p>
+
+    <!-- Services -->
+    <p class="text-xl sm:text-2xl text-cyan-100 leading-relaxed mb-6">
+      Our core services include <span class="text-green-300 font-semibold">custom PC builds, ethical hacking, data recovery, network installations, and vulnerability assessments</span>. We also help clients with smart home automation and cyber hygiene training.
+    </p>
+
+    <!-- Vision -->
+    <p class="text-xl sm:text-2xl text-cyan-100 leading-relaxed mb-10">
+      Thai Bytes is more than a service provider — it’s a movement toward smarter, safer, and self-reliant digital living across Tamil Nadu and beyond.
+    </p>
+
+    <!-- Timeline Section -->
+    <h2 class="text-3xl text-cyan-300 font-bold mb-6 text-center">Our Journey</h2>
+    <div class="border-l-4 border-cyan-400 pl-6 ml-3 space-y-8 mb-12">
+      <div>
+        <h3 class="text-2xl font-semibold text-yellow-300">2023 - Idea Born</h3>
+        <p class="text-lg text-cyan-100">The concept of Thai Bytes was born out of a passion for ethical hacking, system optimization, and local tech empowerment.</p>
+      </div>
+      <div>
+        <h3 class="text-2xl font-semibold text-yellow-300">2024 - Groundwork & Learning</h3>
+        <p class="text-lg text-cyan-100">Our founder focused on learning, certifications, and building tools for network analysis, hacking defense, and system services.</p>
+      </div>
+      <div>
+        <h3 class="text-2xl font-semibold text-yellow-300">2025 - THAI BYTES Launch</h3>
+        <p class="text-lg text-cyan-100">Official launch of Thai Bytes with service offerings, website, and mobile platform for online requests and product support.</p>
+      </div>
+      <div>
+        <h3 class="text-2xl font-semibold text-yellow-300">Future Vision</h3>
+        <p class="text-lg text-cyan-100">Expanding across Tamil Nadu with smart devices, offline AI tools, and affordable cybersecurity for everyone.</p>
+      </div>
+    </div>
+
+    <!-- Team Section -->
+    <h2 class="text-3xl text-cyan-300 font-bold mb-4 text-center">Meet Our Team</h2>
+    <p class="text-xl text-cyan-100 text-center mb-4">
+      We're a young, growing team of tech enthusiasts, cybersecurity experts, and digital creators working toward a smarter digital future.
+    </p>
+    <div class="flex flex-wrap justify-center gap-6">
+      <!-- Add team members -->
+      <div class="text-center">
+        <img src="images/t1.png" alt="Team Member 1" class="w-28 h-28 rounded-full mx-auto border-2 border-cyan-300">
+        <p class="mt-2 text-cyan-100 font-medium">Meganathan</p>
+        <p class="text-sm text-cyan-200">Network Engineer & PC Builder</p>
+      </div>
+      <div class="text-center">
+        <img src="images/team2.jpg" alt="Team Member 2" class="w-28 h-28 rounded-full mx-auto border-2 border-cyan-300">
+        <p class="mt-2 text-cyan-100 font-medium">Azhagu</p>
+        <p class="text-sm text-cyan-200">Branch Head</p>
+      </div>
+    </div>
+  </div>
+  <!-- ✨ particles.js script -->
+  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+  <script>
+    particlesJS("particles-js", {
+      "particles": {
+        "number": {
+          "value": 60,
+          "density": { "enable": true, "value_area": 800 }
+        },
+        "color": { "value": "#00ffff" },
+        "shape": {
+          "type": "circle",
+          "stroke": { "width": 0, "color": "#000000" }
+        },
+        "opacity": {
+          "value": 0.5,
+          "random": true,
+          "anim": { "enable": true, "speed": 0.6, "opacity_min": 0.1, "sync": false }
+        },
+        "size": {
+          "value": 3,
+          "random": true,
+          "anim": { "enable": false }
+        },
+        "line_linked": {
+          "enable": true,
+          "distance": 150,
+          "color": "#00ffff",
+          "opacity": 0.4,
+          "width": 1
+        },
+        "move": {
+          "enable": true,
+          "speed": 1.8,
+          "direction": "none",
+          "random": false,
+          "straight": false,
+          "out_mode": "out",
+          "bounce": false
+        }
+      },
+      "interactivity": {
+        "detect_on": "canvas",
+        "events": {
+          "onhover": { "enable": true, "mode": "grab" },
+          "onclick": { "enable": false },
+          "resize": true
+        },
+        "modes": {
+          "grab": { "distance": 180, "line_linked": { "opacity": 0.5 } }
+        }
+      },
+      "retina_detect": true
+    });
+  </script>
+</body>
+</html>

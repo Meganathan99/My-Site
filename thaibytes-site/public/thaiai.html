@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>THAI AI</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <style>
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-thumb { background: #888; border-radius: 10px; }
+  </style>
+</head>
+<body class="bg-gray-900 text-white h-screen flex flex-col">
+
+  <!-- Header -->
+  <div class="bg-black p-4 flex justify-between items-center">
+    <h1 class="text-xl font-bold">🤖 THAI AI Assistant</h1>
+    <button id="voiceToggle" class="bg-purple-500 px-3 py-1 rounded">🔇 Voice OFF</button>
+  </div>
+
+  <!-- Chat Box -->
+  <div id="chatBox" class="flex-1 p-4 overflow-y-auto space-y-3"></div>
+
+  <!-- Input -->
+  <div class="p-3 bg-black flex gap-2">
+    <input id="userInput" type="text" placeholder="Type here..." class="flex-1 p-2 rounded bg-gray-800 text-white" />
+    <button onclick="askTHAI()" class="bg-green-600 px-4 py-2 rounded">Ask</button>
+  </div>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAmBGnTLSBnEuT4GUMBzX7Z_K7lAEDjx2c",
+      authDomain: "thai-bytes.firebaseapp.com",
+      projectId: "thai-bytes",
+      storageBucket: "thai-bytes.appspot.com",
+      messagingSenderId: "212605449568",
+      appId: "1:212605449568:web:8e170a40f1907d33cf1a05"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    const chatBox = document.getElementById("chatBox");
+    const inputBox = document.getElementById("userInput");
+    const voiceBtn = document.getElementById("voiceToggle");
+
+    let voiceEnabled = false;
+
+    voiceBtn.onclick = () => {
+      voiceEnabled = !voiceEnabled;
+      voiceBtn.innerText = voiceEnabled ? "🔊 Voice ON" : "🔇 Voice OFF";
+      voiceBtn.classList.toggle("bg-purple-500", !voiceEnabled);
+      voiceBtn.classList.toggle("bg-green-600", voiceEnabled);
+    };
+
+    function appendChat(text, sender = 'user') {
+      const msg = document.createElement('div');
+      msg.className = sender === 'user'
+        ? "text-right bg-blue-700 max-w-[80%] ml-auto p-2 rounded-xl"
+        : "text-left bg-gray-700 max-w-[80%] mr-auto p-2 rounded-xl flex justify-between items-center";
+
+      if (sender === 'bot' && voiceEnabled) {
+        msg.innerHTML = `<span>${text}</span>
+          <button onclick="speakOut(\`${text.replace(/`/g, '\\`')}\`)" class="ml-2 text-yellow-400">🔊</button>`;
+      } else {
+        msg.innerText = text;
+      }
+
+      chatBox.appendChild(msg);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    async function askTHAI() {
+      const q = inputBox.value.trim();
+      if (!q) return;
+      appendChat(q, 'user');
+      inputBox.value = "";
+
+      const loadingMsg = document.createElement('div');
+      loadingMsg.className = "text-left bg-gray-700 max-w-[80%] mr-auto p-2 rounded-xl animate-pulse";
+      loadingMsg.innerText = "⌛ Typing...";
+      chatBox.appendChild(loadingMsg);
+      chatBox.scrollTop = chatBox.scrollHeight;
+
+      const lowerQ = q.toLowerCase();
+      let a = await getFromFirebase(lowerQ);
+
+      // ✨ Check for hex code like 0x80070005
+      if (!a) {
+        const hexMatch = lowerQ.match(/0x[0-9a-f]+/i);
+        if (hexMatch) {
+          a = await getFromFirebase(hexMatch[0]);
+        }
+      }
+
+      // ✨ Check for named error like ERROR_ACCESS_DENIED
+      if (!a) {
+        const errMatch = lowerQ.match(/error_[a-z0-9_]+/i);
+        if (errMatch) {
+          a = await getFromFirebase(errMatch[0]);
+        }
+      }
+
+      // ❌ If no match found
+      if (!a) {
+        a = "டெய்! என்னால எல்லாத்துக்கும் இப்போவே பதில்சொல்ல முடியாதுடா… எனக்கு இப்போதான் எல்லா தகவலும் பீட் பண்ணி கொண்டு இருக்காங்க. அதனால், இப்போ வரைக்கும் பீஸ் பீஸா பண்ணி போட்டிருக்குற error codes தானே என்கிட்ட இருக்கு. நீ error code-ஐ மட்டும் சொல்லு, நான் database-ல செக் பண்ணி சொல்லுறேன். (e.g: `0x80070005`, `ERROR_ACCESS_DENIED`)";
+      }
+
+      loadingMsg.remove();
+      appendChat(a, 'bot');
+      if (voiceEnabled) speakOut(a);
+      saveToLog(lowerQ, a);
+    }
+
+    async function getFromFirebase(q) {
+      try {
+        const doc = await db.collection("thai_answers").doc(q).get();
+        return doc.exists ? doc.data().answer : null;
+      } catch (e) {
+        console.error("Firebase error:", e);
+        return null;
+      }
+    }
+
+    async function saveToLog(q, a) {
+      try {
+        await db.collection("thai_logs").add({
+          question: q,
+          answer: a,
+          time: firebase.firestore.FieldValue.serverTimestamp()
+        });
+      } catch (e) {
+        console.error("Log error:", e);
+      }
+    }
+
+    function speakOut(text) {
+      const synth = window.speechSynthesis;
+      const utter = new SpeechSynthesisUtterance(text);
+      utter.lang = /[\u0B80-\u0BFF]/.test(text) ? "ta-IN" : "en-US";
+      synth.speak(utter);
+    }
+  </script>
+</body>
+</html>

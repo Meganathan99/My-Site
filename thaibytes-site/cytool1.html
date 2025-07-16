@@ -1,0 +1,345 @@
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>THAI BYTES Cyber Tools</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      margin: 0;
+      background: #000;
+      color: #f1f5f9;
+      font-family: 'Courier New', monospace;
+      overflow-x: hidden;
+    }
+    canvas#matrix {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+    .tool-card {
+      @apply bg-black/50 border border-green-400/30 backdrop-blur-md p-4 rounded-2xl shadow-lg w-full;
+    }
+    input, textarea {
+      @apply w-full p-2 rounded bg-black/40 text-lime-300 mt-2 mb-4 border border-lime-600;
+    }
+    button {
+      @apply bg-lime-500 px-4 py-2 rounded text-black font-bold hover:bg-lime-400 transition;
+    }
+    .glitch {
+      position: relative;
+      color: #0f0;
+      font-weight: 900;
+      font-size: 2rem;
+      animation: glitch 1s infinite;
+    }
+    @keyframes glitch {
+      0% { text-shadow: 2px 2px red; }
+      20% { text-shadow: -2px 2px cyan; }
+      40% { text-shadow: 2px -2px lime; }
+      60% { text-shadow: -2px -2px magenta; }
+      80% { text-shadow: 2px 2px blue; }
+      100% { text-shadow: 0 0 white; }
+    }
+  </style>
+</head>
+<body class="min-h-screen p-4">
+  <!-- Matrix Background -->
+  <canvas id="matrix"></canvas>  <!-- Heading -->  <h1 class="glitch text-3xl md:text-4xl text-center mb-2 tracking-widest">
+    🔧 THAI BYTES Cyber Test Tools
+  </h1>
+  <p class="text-center text-sm text-gray-400 italic mb-6">
+    ⚠️ This toolset is intended for educational purposes only.
+  </p>  <!-- Tool Cards Grid -->  <div class="grid gap-6 md:grid-cols-2 w-full max-w-6xl mx-auto"><!-- Tool: Port Scanner (Mock) -->
+<div class="tool-card">
+  <h2 class="text-xl font-bold mb-2">🌐 Port Scanner</h2>
+  <input type="text" id="portHost" placeholder="Enter Host/IP">
+  <p class="text-sm italic">(Note: Actual scan requires backend or terminal use)</p>
+</div>
+  <!-- IP Trace -->
+    <div class="tool-card">
+      <h2 class="text-xl font-semibold mb-2">🌐 IP Trace</h2>
+      <p>Your IP: <span id="ipAddress">Fetching...</span></p>
+      <p>Location: <span id="ipLocation">Detecting...</span></p>
+      <button onclick="copyIP()">Copy IP</button>
+    </div><!-- Base64 Encode/Decode -->
+<div class="tool-card">
+  <h2 class="text-xl font-semibold mb-2">🧾 Base64 Encode/Decode</h2>
+  <textarea id="b64Input" placeholder="Enter text..."></textarea>
+  <button onclick="encodeB64()">Encode</button>
+  <button onclick="decodeB64()">Decode</button>
+  <textarea id="b64Output" placeholder="Result..." readonly></textarea>
+</div>
+<!-- Port Scanner (Client-side ping simulation) -->
+<div class="tool-card">
+  <h2 class="text-xl font-semibold mb-2">🛠 Port Scanner</h2>
+  <input type="text" id="scanIP" placeholder="Enter IP or domain">
+  <input type="text" id="scanPorts" placeholder="Enter ports (comma separated, e.g. 21,22,80)">
+  <button onclick="scanPortsFunc()">Scan</button>
+  <ul id="scanResult" class="mt-2 text-sm"></ul>
+</div>
+<!-- Password Strength Checker -->
+<div class="tool-card">
+  <h2 class="text-xl font-semibold mb-2">🔒 Password Strength</h2>
+  <input type="password" id="passwordInput" placeholder="Enter password..." oninput="checkPasswordStrength()">
+  <p id="passwordStrength" class="text-sm mt-2">Strength: -</p>
+</div>
+<!-- Tool: Hash Generator -->
+<div class="tool-card">
+  <h2 class="text-xl font-bold mb-2">🔐 Hash Generator (MD5, SHA-1)</h2>
+  <input type="text" id="hashInput" placeholder="Enter text">
+  <button onclick="generateHash()">Generate</button>
+  <textarea id="hashResult" rows="4" readonly></textarea>
+</div>
+
+<!-- Tool: WHOIS Lookup (Mock) -->
+<div class="tool-card">
+  <h2 class="text-xl font-bold mb-2">🌍 WHOIS Lookup</h2>
+  <input type="text" placeholder="Enter domain">
+  <p class="text-sm italic">(Feature placeholder. Needs backend WHOIS API)</p>
+</div>
+
+<!-- Tool: HTTP Header Viewer -->
+<div class="tool-card">
+  <h2 class="text-xl font-bold mb-2">🔍 HTTP Header Viewer</h2>
+  <input type="text" id="headerUrl" placeholder="Enter URL">
+  <button onclick="getHeaders()">Fetch Headers</button>
+  <textarea id="headerResult" rows="6" readonly></textarea>
+</div>
+
+<!-- Tool: User-Agent Detector -->
+<div class="tool-card">
+  <h2 class="text-xl font-bold mb-2">🧫 User-Agent Detector</h2>
+  <textarea readonly id="uaDisplay"></textarea>
+</div>
+
+<!-- Tool: DNS Resolver -->
+<div class="tool-card">
+  <h2 class="text-xl font-bold mb-2">📡 DNS Resolver</h2>
+  <input type="text" id="dnsDomain" placeholder="Enter domain">
+  <button onclick="resolveDNS()">Resolve</button>
+  <textarea id="dnsResult" rows="5" readonly></textarea>
+</div>
+
+<!-- Tool: Email Validator -->
+<div class="tool-card">
+  <h2 class="text-xl font-bold mb-2">📧 Email Validator</h2>
+  <input type="text" id="emailCheck" placeholder="Enter email">
+  <button onclick="validateEmail()">Validate</button>
+  <p id="emailResult" class="mt-2"></p>
+</div>
+
+<!-- Tool: Firewall Ping Tester -->
+<div class="tool-card">
+  <h2 class="text-xl font-bold mb-2">🛡️ Firewall Ping Tester</h2>
+  <input type="text" id="pingHost" placeholder="Enter IP or URL">
+  <button onclick="pingTest()">Ping</button>
+  <p id="pingResult" class="mt-2"></p>
+</div>
+
+<!-- Tool: Morse Code Converter -->
+<div class="tool-card">
+  <h2 class="text-xl font-bold mb-2">🧬 Morse Code Converter</h2>
+  <textarea id="morseInput" placeholder="Enter text..."></textarea>
+  <div class="flex gap-2">
+    <button onclick="toMorse()">To Morse</button>
+    <button onclick="fromMorse()">From Morse</button>
+  </div>
+  <textarea id="morseOutput" rows="3" readonly></textarea>
+</div>
+
+<!-- Tool: Link Extractor -->
+<div class="tool-card">
+  <h2 class="text-xl font-bold mb-2">🎯 Link Extractor</h2>
+  <textarea id="htmlInput" rows="5" placeholder="Paste HTML code..."></textarea>
+  <button onclick="extractLinks()">Extract Links</button>
+  <textarea id="linkResult" rows="4" readonly></textarea>
+</div>
+
+<!-- Tool: JWT Decoder -->
+<div class="tool-card">
+  <h2 class="text-xl font-bold mb-2">📦 JWT Decoder</h2>
+  <textarea id="jwtInput" placeholder="Paste JWT token..."></textarea>
+  <button onclick="decodeJWT()">Decode</button>
+  <textarea id="jwtOutput" rows="6" readonly></textarea>
+</div>
+
+<!-- Tool: QR Generator -->
+<div class="tool-card">
+  <h2 class="text-xl font-bold mb-2">📲 QR Code Generator</h2>
+  <input type="text" id="qrInput" placeholder="Enter text or URL">
+  <button onclick="generateQR()">Generate QR</button>
+  <div class="mt-4 text-center">
+    <img id="qrImage" src="" class="mx-auto w-32 h-32" />
+  </div>
+</div>
+
+  </div>  <script>
+    // Matrix Animation
+    const canvas = document.getElementById("matrix");
+    const ctx = canvas.getContext("2d");
+    canvas.height = window.innerHeight;
+    canvas.width = window.innerWidth;
+    let matrix = "01".split("");
+    let font_size = 16;
+    let columns = canvas.width / font_size;
+    let drops = Array(Math.floor(columns)).fill(1);
+    function draw() {
+      ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = "#0f0";
+      ctx.font = font_size + "px monospace";
+      for (let i = 0; i < drops.length; i++) {
+        let text = matrix[Math.floor(Math.random() * matrix.length)];
+        ctx.fillText(text, i * font_size, drops[i] * font_size);
+        if (drops[i] * font_size > canvas.height && Math.random() > 0.975) drops[i] = 0;
+        drops[i]++;
+      }
+    }
+    setInterval(draw, 33);
+
+    document.getElementById('uaDisplay').value = navigator.userAgent;
+
+    function getHeaders() {
+      const url = document.getElementById('headerUrl').value;
+      fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`)
+        .then(res => res.json())
+        .then(data => document.getElementById('headerResult').value = data.contents)
+        .catch(() => document.getElementById('headerResult').value = 'Error retrieving headers.');
+    }
+    function resolveDNS() {
+      const domain = document.getElementById('dnsDomain').value;
+      fetch(`https://dns.google/resolve?name=${domain}`)
+        .then(res => res.json())
+        .then(data => {
+          const ips = (data.Answer || []).map(a => a.data).join('\n');
+          document.getElementById('dnsResult').value = ips || 'No A records found.';
+        })
+        .catch(() => document.getElementById('dnsResult').value = 'Error resolving domain.');
+    }
+    function validateEmail() {
+      const email = document.getElementById('emailCheck').value;
+      const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      const result = pattern.test(email) ? '✅ Valid Email' : '❌ Invalid Email';
+      document.getElementById('emailResult').textContent = result;
+    }
+    function pingTest() {
+      const host = document.getElementById('pingHost').value;
+      const img = new Image();
+      const start = Date.now();
+      img.onload = () => {
+        const latency = Date.now() - start;
+        document.getElementById('pingResult').textContent = `Ping Success (~${latency}ms)`;
+      };
+      img.onerror = () => {
+        document.getElementById('pingResult').textContent = 'Ping Failed or Blocked.';
+      };
+      img.src = `https://${host}/favicon.ico?ping=${Date.now()}`;
+    }
+    const MORSE = { ".-":"A","-...":"B","-.-.":"C","-..":"D",".":"E","..-.":"F","--.":"G","....":"H","..":"I",".---":"J","-.-":"K",".-..":"L","--":"M","-.":"N","---":"O",".--.":"P","--.-":"Q",".-.":"R","...":"S","-":"T","..-":"U","...-":"V",".--":"W","-..-":"X","-.--":"Y","--..":"Z","-----":"0",".----":"1","..---":"2","...--":"3","....-":"4",".....":"5","-....":"6","--...":"7","---..":"8","----.":"9"};
+    const MORSE_REVERSE = Object.fromEntries(Object.entries(MORSE).map(([k,v]) => [v,k]));
+    function toMorse() {
+      const text = document.getElementById('morseInput').value.toUpperCase();
+      const morse = [...text].map(c => MORSE_REVERSE[c] || '').join(' ');
+      document.getElementById('morseOutput').value = morse;
+    }
+    function fromMorse() {
+      const morse = document.getElementById('morseInput').value.trim();
+      const text = morse.split(' ').map(code => MORSE[code] || '').join('');
+      document.getElementById('morseOutput').value = text;
+    }
+    function extractLinks() {
+      const html = document.getElementById('htmlInput').value;
+      const matches = [...html.matchAll(/<a[^>]+href=["']?([^"'>]+)["']?/gi)].map(m => m[1]);
+      document.getElementById('linkResult').value = matches.join('\n') || 'No links found.';
+    }
+    function decodeJWT() {
+      const token = document.getElementById("jwtInput").value;
+      try {
+        const [header, payload] = token.split('.');
+        const decode = str => atob(str.replace(/-/g, '+').replace(/_/g, '/'));
+        const output = `Header:\n${JSON.stringify(JSON.parse(decode(header)), null, 2)}\n\nPayload:\n${JSON.stringify(JSON.parse(decode(payload)), null, 2)}`;
+        document.getElementById("jwtOutput").value = output;
+      } catch (e) {
+        document.getElementById("jwtOutput").value = "Invalid JWT format";
+      }
+    }
+    function generateQR() {
+      const data = document.getElementById("qrInput").value;
+      const img = document.getElementById("qrImage");
+      img.src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(data)}`;
+    }
+    function generateHash() {
+      const text = document.getElementById("hashInput").value;
+      const md5 = new TextEncoder().encode(text);
+      crypto.subtle.digest('SHA-1', md5).then(hash => {
+        const hex = Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, '0')).join('');
+        document.getElementById("hashResult").value = `SHA-1: ${hex}`;
+      });
+    }
+// IP Trace
+    fetch('https://api.ipify.org?format=json')
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById('ipAddress').textContent = data.ip;
+        fetch(`https://ipapi.co/${data.ip}/json/`)
+          .then(res => res.json())
+          .then(info => {
+            document.getElementById('ipLocation').textContent = `${info.city}, ${info.region}, ${info.country_name}`;
+          });
+      });
+
+    function copyIP() {
+      const ip = document.getElementById('ipAddress').textContent;
+      navigator.clipboard.writeText(ip);
+      alert("IP copied to clipboard!");
+    }
+
+    // Base64 Functions
+    function encodeB64() {
+      const text = document.getElementById("b64Input").value;
+      document.getElementById("b64Output").value = btoa(text);
+    }
+
+    function decodeB64() {
+      const text = document.getElementById("b64Input").value;
+      try {
+        document.getElementById("b64Output").value = atob(text);
+      } catch {
+        document.getElementById("b64Output").value = "Invalid Base64!";
+      }
+    }
+
+    // Password Strength
+    function checkPasswordStrength() {
+      const pwd = document.getElementById('passwordInput').value;
+      let strength = "Weak";
+      if (pwd.length > 12 && /[A-Z]/.test(pwd) && /[0-9]/.test(pwd) && /[^a-zA-Z0-9]/.test(pwd)) strength = "Strong";
+      else if (pwd.length > 8) strength = "Medium";
+      document.getElementById('passwordStrength').textContent = `Strength: ${strength}`;
+    }
+
+    // Port Scanner
+    function scanPortsFunc() {
+      const ip = document.getElementById("scanIP").value;
+      const ports = document.getElementById("scanPorts").value.split(',');
+      const resultList = document.getElementById("scanResult");
+      resultList.innerHTML = "";
+      ports.forEach(port => {
+        const img = new Image();
+        const start = Date.now();
+        img.onload = () => {
+          const time = Date.now() - start;
+          resultList.innerHTML += `<li>Port ${port.trim()}: Open (ping ~${time}ms)</li>`;
+        };
+        img.onerror = () => {
+          resultList.innerHTML += `<li>Port ${port.trim()}: Closed/Filtered</li>`;
+        };
+        img.src = `http://${ip}:${port.trim()}`;
+      });
+    }
+  </script></body>
+</html>

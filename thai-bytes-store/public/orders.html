@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Order History - THAI BYTES</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
+  <script src="js/firebase-config.js"></script>
+</head>
+<body class="bg-gray-100 text-black">
+  <header class="bg-blue-600 p-4 text-white text-2xl font-bold text-center">🧾 Order History</header>
+  <main class="p-6">
+    <div id="orderList" class="space-y-4"></div>
+  </main>
+
+  <script>
+firebase.auth().onAuthStateChanged((user) => {
+  if (!user) {
+    alert("Please login to view orders");
+    window.location.href = "login.html";
+    return;
+  }
+
+  firebase.firestore().collection("orders")
+    .where("uid", "==", user.uid)
+    .orderBy("orderTime", "desc")
+    .get()
+    .then((snapshot) => {
+      const list = document.getElementById("orderList");
+      snapshot.forEach((doc) => {
+        const data = doc.data();
+        list.innerHTML += `
+          <div class="bg-white p-4 rounded shadow">
+            <h2 class="text-xl font-bold">${data.product}</h2>
+            <p>₹${data.price} x ${data.quantity}</p>
+            <p class="text-sm text-gray-600">${new Date(data.orderTime?.seconds * 1000).toLocaleString()}</p>
+          </div>`;
+      });
+    });
+});
+  </script>
+</body>
+</html>

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Contact - THAI BYTES</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Playfair+Display:wght@600&display=swap');
+
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    h1 {
+      font-family: 'Playfair Display', serif;
+    }
+    a:hover {
+      text-shadow: 0 0 8px #00ffffaa;
+    }
+    .glow-card {
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.15);
+    }
+
+    #particles-js {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      top: 0;
+      left: 0;
+    }
+  </style>
+</head>
+<body class="text-white min-h-screen bg-black">
+
+  <!-- 🎆 Animated Background -->
+  <div id="particles-js"></div>
+
+  <!-- Contact Card -->
+  <div class="glow-card max-w-4xl mx-auto p-6 sm:p-10 rounded-2xl mt-12 sm:mt-20 z-10 relative">
+    <h1 class="text-4xl sm:text-6xl font-bold text-cyan-400 text-center mb-8 tracking-wide">Get in Touch</h1>
+
+    <p class="text-xl sm:text-2xl text-cyan-100 text-center mb-10 leading-relaxed">
+      Whether you need support, consultation, or just want to learn more about our services, we're happy to help. Contact us through any of the channels below.
+    </p>
+
+    <div class="space-y-6 text-lg sm:text-xl text-cyan-100">
+      <p class="flex items-center gap-4">📱 <span class="text-cyan-300 font-medium">+91 95855 40762</span></p>
+      <p class="flex items-center gap-4">📧 <span class="text-cyan-300 font-medium">thaibytes.md@gmail.com</span></p>
+      <p class="flex items-center gap-4">
+        📸
+        <a href="https://www.instagram.com/thai.bytes?igsh=MWpiOXY0NWh0dnVsdA==" target="_blank" class="text-cyan-300 font-medium underline hover:text-white transition">@thai.bytes</a>
+      </p>
+      <p class="flex items-center gap-4">
+        💬
+        <a href="https://wa.me/919585540762" target="_blank" class="text-cyan-300 font-medium underline hover:text-white transition">Chat on WhatsApp</a>
+      </p>
+    </div>
+
+    <p class="text-center text-cyan-200 text-base sm:text-lg mt-10">
+      💡 We'll get back to you within 24 hours. Thanks for connecting with <span class="text-yellow-300 font-semibold">THAI BYTES</span>.
+    </p>
+  </div>
+
+  <!-- ✨ particles.js script -->
+  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+  <script>
+    particlesJS("particles-js", {
+      "particles": {
+        "number": {
+          "value": 60,
+          "density": { "enable": true, "value_area": 800 }
+        },
+        "color": { "value": "#00ffff" },
+        "shape": {
+          "type": "circle",
+          "stroke": { "width": 0, "color": "#000000" }
+        },
+        "opacity": {
+          "value": 0.5,
+          "random": true,
+          "anim": { "enable": true, "speed": 0.6, "opacity_min": 0.1, "sync": false }
+        },
+        "size": {
+          "value": 3,
+          "random": true,
+          "anim": { "enable": false }
+        },
+        "line_linked": {
+          "enable": true,
+          "distance": 150,
+          "color": "#00ffff",
+          "opacity": 0.4,
+          "width": 1
+        },
+        "move": {
+          "enable": true,
+          "speed": 1.8,
+          "direction": "none",
+          "random": false,
+          "straight": false,
+          "out_mode": "out",
+          "bounce": false
+        }
+      },
+      "interactivity": {
+        "detect_on": "canvas",
+        "events": {
+          "onhover": { "enable": true, "mode": "grab" },
+          "onclick": { "enable": false },
+          "resize": true
+        },
+        "modes": {
+          "grab": { "distance": 180, "line_linked": { "opacity": 0.5 } }
+        }
+      },
+      "retina_detect": true
+    });
+  </script>
+</body>
+</html>

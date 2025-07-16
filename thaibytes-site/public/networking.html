@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Networking - THAI BYTES</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow-x: hidden;
+      background-color: #000;
+    }
+    .overlay {
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(6px);
+    }
+    @keyframes fade-in {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-in {
+      animation: fade-in 1s ease-out both;
+    }
+  </style>
+</head>
+
+<body class="bg-cover bg-center bg-no-repeat text-white font-sans min-h-screen relative">
+
+  <!-- 🌊 Animated Wave Background -->
+  <div class="absolute bottom-0 left-0 w-full overflow-hidden leading-[0] z-0 pointer-events-none">
+    <svg class="relative block w-[200%] h-48 -translate-x-1/4 opacity-20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+      <path d="M0,0V46.29c47.8,22,103.43,35.2,162,37..." fill="#22d3ee" fill-opacity="0.4"></path>
+    </svg>
+  </div>
+
+  <!-- 🔹 Glass Container -->
+  <div class="overlay max-w-6xl mx-auto p-6 sm:p-12 rounded-2xl shadow-2xl mt-10 animate-fade-in relative z-10">
+
+    <h1 class="text-4xl sm:text-6xl font-extrabold text-cyan-400 text-center mb-12 drop-shadow-lg">🌐 Networking Services</h1>
+
+    <!-- 🛠️ Basic Setup -->
+    <section class="mb-12">
+      <h2 class="text-3xl sm:text-4xl text-cyan-300 font-semibold mb-6">🔧 Basic Setup</h2>
+      <ul class="list-disc ml-6 sm:ml-10 text-cyan-100 text-xl sm:text-2xl space-y-4 leading-relaxed">
+        <li>📶 <strong>Router Setup</strong> – Secure config, password, MAC filtering – ₹300+</li>
+        <li>🖧 <strong>LAN Setup</strong> – Wired/wireless network with IP planning – ₹500+</li>
+        <li>📡 <strong>Wi-Fi Extension</strong> – Repeaters or mesh boosters – ₹350+</li>
+        <li>📱 <strong>Smart Devices</strong> – Cameras, IoT, printers – ₹350+</li>
+      </ul>
+    </section>
+
+    <!-- 🔌 Installation -->
+    <section class="mb-12">
+      <h2 class="text-3xl sm:text-4xl text-cyan-300 font-semibold mb-6">🛠️ Installation & Cabling</h2>
+      <ul class="list-disc ml-6 sm:ml-10 text-cyan-100 text-xl sm:text-2xl space-y-4 leading-relaxed">
+        <li>🌐 <strong>Full Network Installation</strong> – Cabling, switch/router setup – ₹1500+</li>
+        <li>🔌 <strong>Ethernet Crimping</strong> – Cat5/Cat6 cable setup – ₹50/meter</li>
+      </ul>
+    </section>
+
+    <!-- 🔒 Security -->
+    <section class="mb-12">
+      <h2 class="text-3xl sm:text-4xl text-cyan-300 font-semibold mb-6">🔒 Security & Optimization</h2>
+      <ul class="list-disc ml-6 sm:ml-10 text-cyan-100 text-xl sm:text-2xl space-y-4 leading-relaxed">
+        <li>🛡️ <strong>Firewall Setup</strong> – Router-level protections – ₹1000+</li>
+        <li>🧰 <strong>Network Troubleshooting</strong> – Fix DNS/IP/speed issues – ₹400+</li>
+        <li>📊 <strong>Monitoring & Alerts</strong> – Real-time tracking – ₹750+</li>
+        <li>🏢 <strong>Office Network Audit</strong> – Optimization & controls – ₹1200+</li>
+        <li>🧩 <strong>VLAN Segmentation</strong> – Isolate & manage network access – ₹900+</li>
+      </ul>
+    </section>
+
+    <!-- ⚙️ Advanced -->
+    <section class="mb-12">
+      <h2 class="text-3xl sm:text-4xl text-cyan-300 font-semibold mb-6">⚙️ Advanced Services</h2>
+      <ul class="list-disc ml-6 sm:ml-10 text-cyan-100 text-xl sm:text-2xl space-y-4 leading-relaxed">
+        <li>🔐 <strong>VPN Setup</strong> – Privacy + Remote Access – ₹600+</li>
+        <li>🗂️ <strong>NAS & File Sharing</strong> – Setup home/office shared storage – ₹850+</li>
+        <li>🌐 <strong>Guest Wi-Fi</strong> – Separate guest access – ₹400+</li>
+      </ul>
+    </section>
+
+    <!-- 🔘 CTA Button -->
+    <div class="text-center mt-14">
+      <a href="https://wa.me/9585540762" target="_blank" class="bg-cyan-500 hover:bg-cyan-600 text-white text-2xl sm:text-3xl font-bold px-10 py-4 rounded-full shadow-lg transition duration-300">
+        📞 Book a Service Now
+      </a>
+    </div>
+
+  </div>
+</body>
+</html>

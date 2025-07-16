@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>THAI BYTES Cyber Tools</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      margin: 0;
+      background: #000;
+      color: #e0e7ff; /* Lighter, subtle blue-white for main text */
+      font-family: 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif; /* Modern, clean font */
+      overflow-x: hidden;
+    }
+    .background-animation {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      background: linear-gradient(135deg, #0a192f 0%, #000a1a 100%); /* Deep, dark blue-black gradient */
+      background-size: 40px 40px;
+      background-image: linear-gradient(to right, #1a2a40 1px, transparent 1px),
+                        linear-gradient(to bottom, #1a2a40 1px, transparent 1px);
+      animation: backgroundShift 30s infinite alternate, gridPulse 15s infinite;
+    }
+    @keyframes backgroundShift {
+      0% { background-position: 0% 0%; }
+      100% { background-position: 100% 100%; }
+    }
+    @keyframes gridPulse {
+      0%, 100% { opacity: 0.1; }
+      50% { opacity: 0.05; }
+    }
+
+    .tool-card {
+      @apply bg-gray-900/85 border border-indigo-700/60 backdrop-blur-sm p-6 rounded-xl shadow-2xl w-full transition-all duration-300 hover:border-indigo-500/80;
+    }
+
+    /* --- Input/Textarea Specific Styles --- */
+    input, textarea {
+      @apply w-full p-3 rounded-lg mt-2 mb-4 border-2 border-indigo-700;
+      background-color: #0d0d0d; /* Changed to a very dark, "mad black" */
+      box-shadow: inset 0 2px 5px rgba(0,0,0,0.8); /* Stronger inset shadow */
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+      color: #7cfc00; /* Bright lime green for actual input text */
+      text-shadow: 0 0 5px rgba(124, 252, 0, 0.7); /* Added subtle glow to text */
+    }
+    input:focus, textarea:focus {
+      @apply outline-none border-lime-400; /* Direct border color */
+      box-shadow: inset 0 2px 5px rgba(0,0,0,0.8), 0 0 10px rgba(124, 252, 0, 0.7); /* Green glow on focus */
+    }
+    input::placeholder, textarea::placeholder {
+        color: #55b7b9; /* A techy light blue/cyan for placeholders */
+        opacity: 0.7; /* Slightly transparent */
+    }
+    /* Ensure text within textareas is always visible, even if it matches the background slightly */
+    textarea {
+        line-height: 1.5;
+    }
+
+    /* --- Button Specific Styles --- */
+    button {
+      @apply bg-lime-600 px-6 py-2.5 rounded-lg text-black font-semibold uppercase tracking-wide transition duration-300 ease-in-out shadow-lg;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid transparent; /* Base border for effect */
+      box-shadow: 0 0 15px rgba(124, 252, 0, 0.4); /* Initial subtle glow */
+    }
+    button:hover {
+      @apply bg-lime-500;
+      box-shadow: 0 0 25px rgba(124, 252, 0, 0.8), 0 0 50px rgba(124, 252, 0, 0.6); /* Stronger glow on hover */
+      border-color: #7cfc00; /* Border highlights on hover */
+    }
+    /* Existing subtle glow on hover (keeping it for the 'shine' effect) */
+    button:before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 300%;
+      height: 300%;
+      background: rgba(255, 255, 255, 0.15); /* Slightly stronger shine */
+      transition: all 0.75s;
+      transform: translate(-50%, -50%) rotate(45deg);
+      opacity: 0;
+    }
+    button:hover:before {
+      width: 0;
+      height: 0;
+      opacity: 1;
+    }
+
+    .glitch {
+      position: relative;
+      color: #7bfeff;
+      font-weight: 900;
+      font-size: 2.5rem;
+      animation: glitch 1.5s infinite;
+      text-shadow: 0 0 5px rgba(123, 254, 255, 0.7);
+    }
+    @keyframes glitch {
+      0% { text-shadow: 2px 2px #ff00ff, -2px -2px #00ffff; transform: translate(0px, 0px); }
+      20% { text-shadow: -2px -2px #ff00ff, 2px 2px #00ffff; transform: translate(-2px, 2px); }
+      40% { text-shadow: 2px -2px #ff00ff, -2px 2px #00ffff; transform: translate(2px, -2px); }
+      60% { text-shadow: -2px 2px #ff00ff, 2px -2px #00ffff; transform: translate(-2px, -2px); }
+      80% { text-shadow: 2px 2px #ff00ff, -2px -2px #00ffff; transform: translate(2px, 2px); }
+      100% { text-shadow: 0 0 #ff00ff, 0 0 #00ffff; transform: translate(0px, 0px); }
+    }
+
+    /* Specific text colors for results to ensure readability */
+    #ipAddress, #ipLocation, #passwordStrength, #emailResult, #pingResult, #scanResult li {
+      @apply text-lime-400; /* Bright lime for results */
+    }
+    #scanResult li.text-red-400 {
+      @apply text-red-400; /* Keep specific red for errors/closed ports */
+    }
+    #scanResult li.text-green-400 {
+      @apply text-green-400; /* Keep specific green for success/open ports */
+    }
+  </style>
+</head>
+<body class="min-h-screen p-8">
+  <div class="background-animation"></div>
+
+  <h1 class="glitch text-4xl md:text-5xl lg:text-6xl text-center mb-4 tracking-widest leading-tight">
+    🔧 THAI BYTES Cyber Test Tools
+  </h1>
+  <p class="text-center text-base text-gray-400 italic mb-10">
+    ⚠️ This toolset is intended for educational purposes only.
+  </p>
+
+  <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 w-full max-w-8xl mx-auto">
+    <div class="tool-card">
+      <h2 class="text-xl font-semibold mb-3 text-cyan-400">🌐 IP Trace</h2>
+      <p>Your IP: <span id="ipAddress">Fetching...</span></p>
+      <p class="mb-4">Location: <span id="ipLocation">Detecting...</span></p>
+      <button onclick="copyIP()">Copy IP</button>
+    </div>
+
+    <div class="tool-card">
+      <h2 class="text-xl font-semibold mb-3 text-cyan-400">🧾 Base64 Encode/Decode</h2>
+      <textarea id="b64Input" placeholder="Enter text to encode/decode..." class="h-28"></textarea>
+      <div class="flex gap-3">
+        <button onclick="encodeB64()" class="flex-1">Encode</button>
+        <button onclick="decodeB64()" class="flex-1">Decode</button>
+      </div>
+      <textarea id="b64Output" placeholder="Result will appear here..." readonly class="h-28 mt-4"></textarea>
+    </div>
+
+    <div class="tool-card">
+      <h2 class="text-xl font-semibold mb-3 text-cyan-400">🛠 Port Scanner</h2>
+      <input type="text" id="scanIP" placeholder="Enter IP or domain (e.g., example.com)">
+      <input type="text" id="scanPorts" placeholder="Enter ports (comma separated, e.g., 21,22,80)">
+      <button onclick="scanPortsFunc()">Scan</button>
+      <ul id="scanResult" class="mt-2 text-sm max-h-40 overflow-y-auto px-2 py-1 border border-gray-700 rounded bg-gray-900/50"></ul>
+    </div>
+
+    <div class="tool-card">
+      <h2 class="text-xl font-semibold mb-3 text-cyan-400">🔒 Password Strength</h2>
+      <input type="password" id="passwordInput" placeholder="Enter password to check..." oninput="checkPasswordStrength()">
+      <p id="passwordStrength" class="text-sm mt-2"></p>
+    </div>
+
+    <div class="tool-card">
+      <h2 class="text-xl font-semibold mb-3 text-cyan-400">🔐 Hash Generator (SHA-1)</h2>
+      <input type="text" id="hashInput" placeholder="Enter text to hash">
+      <button onclick="generateHash()">Generate SHA-1</button>
+      <textarea id="hashResult" rows="5" readonly placeholder="Generated hash will appear here..."></textarea>
+    </div>
+
+    <div class="tool-card">
+      <h2 class="text-xl font-semibold mb-3 text-cyan-400">🌍 WHOIS Lookup</h2>
+      <input type="text" placeholder="Enter domain (e.g., google.com)">
+      <p class="text-sm italic text-gray-500 mt-2">(Feature placeholder: Needs backend WHOIS API integration)</p>
+    </div>
+
+    <div class="tool-card">
+      <h2 class="text-xl font-semibold mb-3 text-cyan-400">🔍 HTTP Header Viewer</h2>
+      <input type="text" id="headerUrl" placeholder="Enter URL (e.g., https://example.com)">
+      <button onclick="getHeaders()">Fetch Headers</button>
+      <textarea id="headerResult" rows="7" readonly placeholder="HTTP headers will appear here..."></textarea>
+    </div>
+
+    <div class="tool-card">
+      <h2 class="text-xl font-semibold mb-3 text-cyan-400">🧫 User-Agent Detector</h2>
+      <textarea readonly id="uaDisplay" class="h-28"></textarea>
+    </div>
+
+    <div class="tool-card">
+      <h2 class="text-xl font-semibold mb-3 text-cyan-400">📡 DNS Resolver</h2>
+      <input type="text" id="dnsDomain" placeholder="Enter domain (e.g., example.com)">
+      <button onclick="resolveDNS()">Resolve</button>
+      <textarea id="dnsResult" rows="6" readonly placeholder="DNS records will appear here..."></textarea>
+    </div>
+
+    <div class="tool-card">
+      <h2 class="text-xl font-semibold mb-3 text-cyan-400">📧 Email Validator</h2>
+      <input type="text" id="emailCheck" placeholder="Enter email to validate">
+      <button onclick="validateEmail()">Validate</button>
+      <p id="emailResult" class="mt-2"></p>
+    </div>
+
+    <div class="tool-card">
+      <h2 class="text-xl font-semibold mb-3 text-cyan-400">🛡️ Firewall Ping Tester</h2>
+      <input type="text" id="pingHost" placeholder="Enter IP or URL (e.g., 8.8.8.8)">
+      <button onclick="pingTest()">Ping</button>
+      <p id="pingResult" class="mt-2"></p>
+    </div>
+
+    <div class="tool-card">
+      <h2 class="text-xl font-semibold mb-3 text-cyan-400">🧬 Morse Code Converter</h2>
+      <textarea id="morseInput" placeholder="Enter text or Morse code..." class="h-28"></textarea>
+      <div class="flex gap-3">
+        <button onclick="toMorse()" class="flex-1">To Morse</button>
+        <button onclick="fromMorse()" class="flex-1">From Morse</button>
+      </div>
+      <textarea id="morseOutput" rows="4" readonly placeholder="Converted text/Morse code..." class="mt-4"></textarea>
+    </div>
+
+    <div class="tool-card">
+      <h2 class="text-xl font-semibold mb-3 text-cyan-400">🎯 Link Extractor</h2>
+      <textarea id="htmlInput" rows="6" placeholder="Paste HTML code here..."></textarea>
+      <button onclick="extractLinks()">Extract Links</button>
+      <textarea id="linkResult" rows="5" readonly placeholder="Extracted links will appear here..."></textarea>
+    </div>
+
+    <div class="tool-card">
+      <h2 class="text-xl font-semibold mb-3 text-cyan-400">📦 JWT Decoder</h2>
+      <textarea id="jwtInput" placeholder="Paste JWT token here..." class="h-28"></textarea>
+      <button onclick="decodeJWT()">Decode</button>
+      <textarea id="jwtOutput" rows="7" readonly placeholder="Decoded JWT will appear here..." class="mt-4"></textarea>
+    </div>
+
+    <div class="tool-card">
+      <h2 class="text-xl font-semibold mb-3 text-cyan-400">📲 QR Code Generator</h2>
+      <input type="text" id="qrInput" placeholder="Enter text or URL to generate QR">
+      <button onclick="generateQR()">Generate QR</button>
+      <div class="mt-4 text-center">
+        <img id="qrImage" src="" class="mx-auto w-36 h-36 border border-indigo-600 p-1 bg-white/10 rounded-lg shadow-inner" alt="Generated QR Code" />
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // User-Agent Detector - Initial Load
+    document.getElementById('uaDisplay').value = navigator.userAgent;
+
+    // HTTP Header Viewer
+    function getHeaders() {
+      const url = document.getElementById('headerUrl').value;
+      if (!url) {
+        document.getElementById('headerResult').value = 'Please enter a URL.';
+        return;
+      }
+      fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          let headersString = '';
+          for (let pair of response.headers.entries()) {
+            headersString += `${pair[0]}: ${pair[1]}\n`;
+          }
+          document.getElementById('headerResult').value = headersString || 'No headers found or CORS blocked.';
+        })
+        .catch(e => {
+          console.error("Error fetching headers:", e);
+          document.getElementById('headerResult').value = `Error retrieving headers: ${e.message}. (Ensure URL is valid and reachable)`;
+        });
+    }
+
+    // DNS Resolver
+    function resolveDNS() {
+      const domain = document.getElementById('dnsDomain').value;
+      if (!domain) {
+        document.getElementById('dnsResult').value = 'Please enter a domain.';
+        return;
+      }
+      fetch(`https://dns.google/resolve?name=${domain}`)
+        .then(res => res.json())
+        .then(data => {
+          const ips = (data.Answer || []).map(a => `${a.type === 1 ? 'A' : a.type === 28 ? 'AAAA' : a.type === 16 ? 'TXT' : a.type === 5 ? 'CNAME' : a.type}: ${a.data}`).join('\n');
+          document.getElementById('dnsResult').value = ips || 'No DNS records found.';
+        })
+        .catch(() => document.getElementById('dnsResult').value = 'Error resolving domain. (Check domain name or network)');
+    }
+
+    // Email Validator
+    function validateEmail() {
+      const email = document.getElementById('emailCheck').value;
+      const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      const result = pattern.test(email) ? '✅ Valid Email' : '❌ Invalid Email';
+      document.getElementById('emailResult').textContent = result;
+    }
+
+    // Firewall Ping Tester (Client-side simulation)
+    function pingTest() {
+      const host = document.getElementById('pingHost').value;
+      if (!host) {
+        document.getElementById('pingResult').textContent = 'Please enter an IP or URL.';
+        return;
+      }
+      const img = new Image();
+      const start = Date.now();
+      const timeout = setTimeout(() => {
+        img.onerror = null;
+        document.getElementById('pingResult').textContent = 'Ping Timed Out or Blocked.';
+      }, 3000);
+
+      img.onload = () => {
+        clearTimeout(timeout);
+        const latency = Date.now() - start;
+        document.getElementById('pingResult').textContent = `Ping Success (~${latency}ms)`;
+      };
+      img.onerror = () => {
+        clearTimeout(timeout);
+        document.getElementById('pingResult').textContent = 'Ping Failed or Blocked.';
+      };
+      img.src = `https://${host}/favicon.ico?_=${Date.now()}`;
+    }
+
+    // Morse Code Converter
+    const MORSE = { ".-":"A","-...":"B","-.-.":"C","-..":"D",".":"E","..-.":"F","--.":"G","....":"H","..":"I",".---":"J","-.-":"K",".-..":"L","--":"M","-.":"N","---":"O",".--.":"P","--.-":"Q",".-.":"R","...":"S","-":"T","..-":"U","...-":"V",".--":"W","-..-":"X","-.--":"Y","--..":"Z","-----":"0",".----":"1","..---":"2","...--":"3","....-":"4",".....":"5","-....":"6","--...":"7","---..":"8","----.":"9", " ": "/" };
+    const MORSE_REVERSE = Object.fromEntries(Object.entries(MORSE).map(([k,v]) => [v,k]));
+
+    function toMorse() {
+      const text = document.getElementById('morseInput').value.toUpperCase();
+      const morse = [...text].map(c => MORSE_REVERSE[c] || '').join(' ');
+      document.getElementById('morseOutput').value = morse.trim();
+    }
+
+    function fromMorse() {
+      const morse = document.getElementById('morseInput').value.trim();
+      const text = morse.split(' ').map(code => MORSE[code] || '').join('');
+      document.getElementById('morseOutput').value = text;
+    }
+
+    // Link Extractor
+    function extractLinks() {
+      const html = document.getElementById('htmlInput').value;
+      if (!html) {
+        document.getElementById('linkResult').value = 'Please paste HTML code.';
+        return;
+      }
+      const matches = [...html.matchAll(/<a[^>]+href=["']?([^"'>]+)["']?/gi)].map(m => m[1]);
+      document.getElementById('linkResult').value = matches.join('\n') || 'No links found.';
+    }
+
+    // JWT Decoder
+    function decodeJWT() {
+      const token = document.getElementById("jwtInput").value;
+      if (!token) {
+        document.getElementById("jwtOutput").value = 'Please paste a JWT token.';
+        return;
+      }
+      try {
+        const parts = token.split('.');
+        if (parts.length !== 3) {
+            document.getElementById("jwtOutput").value = "Invalid JWT format: A JWT must have three parts separated by dots.";
+            return;
+        }
+        const [header, payload] = parts;
+
+        const decode = str => {
+            try {
+                let paddedStr = str.replace(/-/g, '+').replace(/_/g, '/');
+                while (paddedStr.length % 4) {
+                    paddedStr += '=';
+                }
+                return decodeURIComponent(atob(paddedStr).split('').map(function (c) {
+                    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+                }).join(''));
+            } catch (e) {
+                console.error("Base64 decoding error:", e);
+                throw new Error("Failed to decode Base64 part. Ensure it is valid Base64 URL safe format.");
+            }
+        };
+
+        const decodedHeader = JSON.stringify(JSON.parse(decode(header)), null, 2);
+        const decodedPayload = JSON.stringify(JSON.parse(decode(payload)), null, 2);
+
+        const output = `Header:\n${decodedHeader}\n\nPayload:\n${decodedPayload}\n\nSignature: (Verification omitted for client-side decoding)`;
+        document.getElementById("jwtOutput").value = output;
+      } catch (e) {
+        document.getElementById("jwtOutput").value = `Invalid JWT format or decoding error: ${e.message}`;
+      }
+    }
+
+    // QR Code Generator
+    function generateQR() {
+      const data = document.getElementById("qrInput").value;
+      const img = document.getElementById("qrImage");
+      if (!data) {
+        img.src = "";
+        img.alt = "Enter text or URL to generate QR";
+        return;
+      }
+      img.src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(data)}`;
+      img.alt = "Generated QR Code";
+    }
+
+    // Hash Generation (SHA-1 using Web Crypto API)
+    async function generateHash() {
+      const text = document.getElementById("hashInput").value;
+      if (!text) {
+        document.getElementById("hashResult").value = 'Please enter text to hash.';
+        return;
+      }
+      const textEncoder = new TextEncoder();
+      const data = textEncoder.encode(text);
+      try {
+        const hashBuffer = await crypto.subtle.digest('SHA-1', data);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        const hexHash = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        document.getElementById("hashResult").value = `SHA-1: ${hexHash}`;
+      } catch (e) {
+        document.getElementById("hashResult").value = `Error generating hash: ${e.message}`;
+      }
+    }
+
+    // IP Trace
+    fetch('https://api.ipify.org?format=json')
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById('ipAddress').textContent = data.ip;
+        fetch(`https://ipapi.co/${data.ip}/json/`)
+          .then(res => res.json())
+          .then(info => {
+            document.getElementById('ipLocation').textContent = `${info.city || 'Unknown City'}, ${info.region || 'Unknown Region'}, ${info.country_name || 'Unknown Country'}`;
+          })
+          .catch(() => document.getElementById('ipLocation').textContent = 'Location unknown');
+      })
+      .catch(() => {
+        document.getElementById('ipAddress').textContent = 'Error fetching IP';
+        document.getElementById('ipLocation').textContent = 'Location unknown';
+      });
+
+    function copyIP() {
+      const ip = document.getElementById('ipAddress').textContent;
+      if (ip && ip !== "Fetching..." && ip !== "Error fetching IP") {
+        navigator.clipboard.writeText(ip)
+          .then(() => alert("IP copied to clipboard!"))
+          .catch(err => console.error('Could not copy text: ', err));
+      } else {
+        alert("IP not available to copy yet.");
+      }
+    }
+
+    // Base64 Encode/Decode
+    function encodeB64() {
+      const text = document.getElementById("b64Input").value;
+      if (!text) {
+        document.getElementById("b64Output").value = 'Please enter text to encode.';
+        return;
+      }
+      document.getElementById("b64Output").value = btoa(text);
+    }
+
+    function decodeB64() {
+      const text = document.getElementById("b64Input").value;
+      if (!text) {
+        document.getElementById("b64Output").value = 'Please enter text to decode.';
+        return;
+      }
+      try {
+        document.getElementById("b64Output").value = atob(text);
+      } catch {
+        document.getElementById("b64Output").value = "Invalid Base64 string!";
+      }
+    }
+
+    // Password Strength
+    function checkPasswordStrength() {
+      const pwd = document.getElementById('passwordInput').value;
+      let strength = "Very Weak";
+      let score = 0;
+
+      if (pwd.length >= 8) score++;
+      if (pwd.length >= 12) score++;
+      if (/[A-Z]/.test(pwd)) score++;
+      if (/[a-z]/.test(pwd)) score++;
+      if (/[0-9]/.test(pwd)) score++;
+      if (/[^a-zA-Z0-9\s]/.test(pwd)) score++; // Special characters
+
+      if (score >= 5) strength = "Strong";
+      else if (score >= 3) strength = "Medium";
+      else if (score >= 1) strength = "Weak";
+
+      document.getElementById('passwordStrength').textContent = `Strength: ${strength}`;
+    }
+
+    // Port Scanner (Client-side simulation)
+    function scanPortsFunc() {
+      const ip = document.getElementById("scanIP").value;
+      const ports = document.getElementById("scanPorts").value.split(',').map(p => p.trim()).filter(p => p);
+      const resultList = document.getElementById("scanResult");
+      resultList.innerHTML = "";
+
+      if (!ip || !ports.length) {
+        resultList.innerHTML = '<li class="text-red-400">Please enter an IP/domain and at least one port.</li>';
+        return;
+      }
+
+      resultList.innerHTML = '<li class="text-gray-400">Simulating scan... (Client-side checks are limited to image loading attempts)</li>';
+
+      ports.forEach(port => {
+        const img = new Image();
+        const start = Date.now();
+        const timeout = setTimeout(() => {
+          img.onerror = null;
+          resultList.innerHTML += `<li class="text-red-400">Port ${port}: Timed out/Closed (simulated)</li>`;
+        }, 3000);
+
+        img.onload = () => {
+          clearTimeout(timeout);
+          const time = Date.now() - start;
+          resultList.innerHTML += `<li class="text-green-400">Port ${port}: Open (simulated ping ~${time}ms)</li>`;
+        };
+        img.onerror = () => {
+          clearTimeout(timeout);
+          resultList.innerHTML += `<li class="text-red-400">Port ${port}: Closed/Filtered (simulated)</li>`;
+        };
+        img.src = `http://${ip}:${port}/favicon.ico?_=${Date.now()}`;
+      });
+    }
+  </script>
+</body>
+</html>

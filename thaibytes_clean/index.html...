@@ -1,0 +1,131 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thai Bytes</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css">
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <nav>
+      <a href="#services">Services</a>
+      <a href="#gallery">Gallery</a>
+      <a href="#process">How We Work</a>
+      <a href="#amc">AMC</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </header>
+
+  <!-- HERO SECTION -->
+  <section class="hero dark-hero" data-aos="zoom-in">
+    <div class="hero-text">
+      <h2>WE BUILD <span class="highlight">People</span><br>BEFORE WE BUILD <span class="main-pc">PC</span></h2>
+      <p>Crafting Your Ultimate Gaming Experience –<br>Unleash Your Power!</p>
+      <p>Smart people work with Smart Systems.<br>Customise your Dream PC</p>
+      <a href="build.html" class="cta gold">BUILD NOW 🛠️</a>
+    </div>
+    <div class="relative">
+      <img src="assets/hero.jpg" alt="Gaming PC Build" class="w-full max-w-[200px] mx-auto z-10 relative rounded-xl shadow-xl" />
+      <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-50 z-0 rounded-xl"></div>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section id="services" data-aos="fade-up">
+    <h2>📌 Our Services</h2>
+    <div class="grid">
+      <div>🔐 Cybersecurity<br><span>Firewall, Antivirus, CCTV, Pen Testing</span></div>
+      <div>💻 Custom PC Builds<br><span>Gaming, Editing, Office PCs</span></div>
+      <div>🛠️ Laptop/Desktop Repair<br><span>Chip-Level, OS, Hardware</span></div>
+      <div>🌐 Networking & AMC<br><span>Wi-Fi, LAN, Business IT</span></div>
+    </div>
+  </section>
+
+  <!-- GALLERY -->
+  <section id="gallery" data-aos="fade-up">
+    <h2>🖼️ Our Work Gallery</h2>
+    <div class="gallery-grid">
+      <img src="assets/pc.jpeg" alt="PC Build 1">
+      <img src="assets/ser.jpeg" alt="Service 2">
+      <img src="assets/nw.jpeg" alt="Networking Setup">
+      <img src="assets/gr.jpeg" alt="Gaming Rig">
+    </div>
+  </section>
+
+  <!-- PROCESS -->
+  <section id="process" data-aos="fade-right">
+    <h2>🧭 How We Work</h2>
+    <ol>
+      <li>🔍 Free Tech Consultation</li>
+      <li>⚙️ Device Repair / Build Setup</li>
+      <li>🔐 Security & Optimization</li>
+      <li>📞 Ongoing Tech Support</li>
+    </ol>
+  </section>
+
+  <!-- AMC SECTION -->
+  <section id="amc" data-aos="fade-up">
+    <h2>📄 AMC (Annual Maintenance Contract)</h2>
+    <p>Join our AMC plans to get regular maintenance, fast support, and peace of mind.</p>
+    <table>
+      <thead>
+        <tr>
+          <th>Plan</th>
+          <th>Visits/Year</th>
+          <th>Remote Support</th>
+          <th>Includes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Basic</td>
+          <td>2</td>
+          <td>3 Calls</td>
+          <td>Virus Cleanup, OS Check</td>
+        </tr>
+        <tr>
+          <td>Standard</td>
+          <td>4</td>
+          <td>5 Calls</td>
+          <td>OS Repair, General Maintenance</td>
+        </tr>
+        <tr>
+          <td>Premium</td>
+          <td>Monthly</td>
+          <td>Unlimited</td>
+          <td>Cybersecurity, Networking</td>
+        </tr>
+      </tbody>
+    </table>
+    <h3>📝 Apply for AMC</h3>
+    <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSfEXAMPLEFORMURL/viewform?embedded=true" width="100%" height="600" frameborder="0">Loading…</iframe>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact" data-aos="fade-left">
+    <h2>📞 Contact Us</h2>
+    <p>📍 Sivakasi, Tamil Nadu</p>
+    <p>📞 Phone: <strong>+91 95855 40762</strong></p>
+    <p>📧 Email: <a href="mailto:thaibytes.md@gmail.com">thaibytes.md@gmail.com</a></p>
+    <p>💬 <a href="https://wa.me/919585540762" target="_blank">Chat on WhatsApp</a></p>
+  </section>
+
+  <!-- FOOTER -->
+  <footer data-aos="fade-up">
+    <p>© 2025 Thai Bytes. Crafted with 🔧 by Smart Tamil Tech.</p>
+  </footer>
+
+  <!-- Floating WhatsApp -->
+  <a href="https://wa.me/919585540762" class="whatsapp-float" target="_blank" title="Chat on WhatsApp">💬</a>
+
+  <!-- AOS Animation -->
+  <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+  <script>AOS.init();</script>
+
+</body>
+</html>
+
+

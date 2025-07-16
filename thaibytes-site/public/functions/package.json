@@ -1,0 +1,12 @@
+{
+  "name": "functions",
+  "main": "index.js",
+  "dependencies": {
+    "@google/generative-ai": "^0.11.0",
+    "firebase-admin": "^12.0.0",
+    "firebase-functions": "^5.0.0",
+    "node-fetch": "^2.6.7"  // <-- DuckDuckGo-விற்காக இதைச் சேர்க்கவும்
+  },
+  "engines": { "node": "18" },
+  "private": true
+}

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>THAI BYTES Store</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .flip-card {
+      background-color: transparent;
+      width: 100%;
+      height: 420px;
+      perspective: 1000px;
+    }
+
+    .flip-card-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      text-align: center;
+      transition: transform 0.8s;
+      transform-style: preserve-3d;
+    }
+
+    .flip-card:hover .flip-card-inner {
+      transform: rotateY(180deg);
+    }
+
+    .flip-card-front, .flip-card-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
+      border-radius: 0.5rem;
+      overflow: hidden;
+    }
+
+    .flip-card-front {
+      background-color: #fff;
+    }
+
+    .flip-card-back {
+      background-color: #fff;
+      transform: rotateY(180deg);
+    }
+
+    .product img {
+  height: 200px;
+  object-fit: contain; /* instead of cover */
+  object-position: center;
+  width: 100%;
+}
+  </style>
+</head>
+<body class="bg-gray-100">
+  <header class="bg-yellow-400 py-6 px-4 shadow-md flex justify-between items-center">
+    <h1 class="text-3xl font-extrabold text-black">🖥️ THAI BYTES STORE</h1>
+  </header>
+
+  <main class="py-10 px-6">
+    <h2 class="text-4xl font-bold text-center text-gray-800 mb-8">Welcome to Your Trusted Tech Store 🛍️</h2>
+
+    <!-- Quote -->
+    <section class="bg-white text-gray-800 py-10 px-6 mt-12 rounded-xl shadow-lg text-center" data-aos="fade-up">
+      <blockquote class="text-2xl md:text-3xl font-bold text-gray-900 italic leading-relaxed max-w-4xl mx-auto">
+        “பொருள்கருவி காலம் வினையிடனொடு ஐந்தும்<br>இருள்தீர எண்ணிச் செயல்.”
+      </blockquote>
+      <p class="mt-4 text-lg text-gray-700">– திருக்குறள் 675</p>
+      <p class="mt-2 text-base text-gray-600 italic">
+        "வேண்டிய பொருள்‌, ஏற்ற கருவி, தக்க காலம்‌, மேற்கொண்ட தொழில்‌, உரிய இடம்‌ ஆகிய ஐந்தினையும்‌ மயக்கம்‌ தீர எண்ணிச்‌ செய்ய வேண்டும்‌."
+      </p>
+    </section>
+
+    <!-- Filter -->
+    <div class="mb-6 flex justify-center mt-8">
+      <select id="categoryFilter" onchange="filterProducts()" class="p-2 border rounded">
+        <option value="all">All Categories</option>
+        <option value="Gaming PC">Gaming PC</option>
+        <option value="Office PC">Office PC</option>
+        <option value="Accessories">Accessories</option>
+      </select>
+    </div>
+
+    <!-- Products -->
+    <div class="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+
+      <!-- 🕹️ Gaming PC Items -->
+      <script>
+        const gamingPCs = [
+          {name: "Ryzen 5 Gaming PC", specs: "8-core, 16GB RAM, 512GB SSD, RTX 3060", price: "₹69,999", img: "images/gpc1.jpeg"},
+          {name: "Intel i5 Gaming PC", specs: "6-core, 16GB RAM, 1TB HDD, GTX 1660", price: "₹59,999", img: "images/i5g1.jpg"},
+          {name: "Ryzen 7 Ultra PC", specs: "8-core, 32GB RAM, 1TB SSD, RTX 3070", price: "₹94,999", img: "images/r7g1.jpg"},
+          {name: "Budget Gamer", specs: "Quad-core, 8GB RAM, 256GB SSD, GT 1030", price: "₹34,999", img: "images/bdg.jpg"},
+        ];
+
+        const officePCs = [
+          {name: "Intel i3 Office PC", specs: "Dual-core, 8GB RAM, 256GB SSD", price: "₹24,999", img: "images/of1.jpeg"},
+          {name: "i5 Workstation", specs: "Quad-core, 16GB RAM, 512GB SSD", price: "₹34,499", img: "images/i5w.jpg"},
+          {name: "Business Mini PC", specs: "Intel NUC, 8GB RAM, 256GB SSD", price: "₹19,999", img: "images/mipc.jpg"},
+          {name: "Office Tower", specs: "i3 12th Gen, 8GB RAM, 512GB NVMe", price: "₹28,500", img: "images/twr.jpg"},
+        ];
+
+        const accessories = [
+          {name: "Gaming Headset", specs: "7.1 Surround Sound, Noise Cancelling", price: "₹1,999", img: "images/H1.webp"},
+          {name: "RGB Keyboard", specs: "Mechanical, Clicky Keys, RGB Lights", price: "₹1,499", img: "images/key.jpg"},
+          {name: "Webcam Full HD", specs: "1080p, Mic Built-in, USB", price: "₹1,299", img: "images/wcm.jpg"},
+          {name: "Wireless Mouse", specs: "Ergonomic, Rechargeable", price: "₹699", img: "images/wms.jpg"},
+        ];
+
+        const allProducts = [...gamingPCs.map(p => ({...p, cat: 'Gaming PC'})),
+                            ...officePCs.map(p => ({...p, cat: 'Office PC'})),
+                            ...accessories.map(p => ({...p, cat: 'Accessories'}))];
+
+        document.addEventListener("DOMContentLoaded", () => {
+          const container = document.querySelector('.grid');
+          allProducts.forEach(prod => {
+            container.innerHTML += `
+              <div class="flip-card product" data-category="${prod.cat}">
+                <div class="flip-card-inner bg-white shadow-lg rounded-lg hover:scale-105 transition-transform">
+                  <div class="flip-card-front p-4">
+                    <img src="${prod.img}" alt="${prod.name}" class="rounded mb-2" />
+                    <h2 class="text-xl font-bold">${prod.name}</h2>
+                  </div>
+                  <div class="flip-card-back bg-white p-4 text-center">
+                    <h2 class="text-xl font-bold mb-2">${prod.name}</h2>
+                    <p class="text-sm mb-1">${prod.specs}</p>
+                    <p class="font-semibold text-green-600 text-lg mb-3">${prod.price}</p>
+                    <a href="https://wa.me/919585540762?text=I'm%20interested%20in%20the%20${encodeURIComponent(prod.name)}%20from%20THAI%20BYTES" target="_blank" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Enquire on WhatsApp</a>
+                  </div>
+                </div>
+              </div>
+            `;
+          });
+        });
+
+        function filterProducts() {
+          const selected = document.getElementById('categoryFilter').value;
+          const products = document.querySelectorAll('.product');
+          products.forEach(card => {
+            const category = card.dataset.category;
+            card.style.display = (selected === 'all' || category === selected) ? 'block' : 'none';
+          });
+        }
+      </script>
+    </div>
+  </main>
+</body>
+</html>

@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://thai-bytes.web.app/sitemap.xml

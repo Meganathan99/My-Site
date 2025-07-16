@@ -1,0 +1,56 @@
+<main class="p-6">
+  <div id="cartItems"></div>
+  <button onclick="placeOrder()" class="mt-4 bg-green-600 text-white px-6 py-2 rounded-full">🧾 Place Order</button>
+</main>
+<script>
+firebase.auth().onAuthStateChanged((user) => {
+  if (!user) {
+    alert("Please login to view cart");
+    window.location.href = "login.html";
+    return;
+  }
+
+  const cartDiv = document.getElementById("cartItems");
+  firebase.firestore().collection("cart")
+    .where("uid", "==", user.uid)
+    .orderBy("createdAt", "desc")
+    .get()
+    .then((snapshot) => {
+      snapshot.forEach((doc) => {
+        const data = doc.data();
+        cartDiv.innerHTML += `
+          <div class="bg-white p-4 shadow mb-4 rounded">
+            <h2 class="text-xl font-bold">${data.product}</h2>
+            <p>₹${data.price} x ${data.quantity}</p>
+          </div>`;
+      });
+    });
+});
+
+// Place Order Function
+function placeOrder() {
+  const user = firebase.auth().currentUser;
+  if (!user) return;
+
+  firebase.firestore().collection("cart")
+    .where("uid", "==", user.uid)
+    .get()
+    .then((snapshot) => {
+      const batch = firebase.firestore().batch();
+      snapshot.forEach((doc) => {
+        const data = doc.data();
+        const orderRef = firebase.firestore().collection("orders").doc();
+        batch.set(orderRef, {
+          ...data,
+          orderTime: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        batch.delete(doc.ref);
+      });
+      return batch.commit();
+    })
+    .then(() => {
+      alert("✅ Order placed successfully!");
+      location.reload();
+    });
+}
+</script>

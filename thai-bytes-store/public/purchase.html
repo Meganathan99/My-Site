@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Products - THAI BYTES</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
+</head>
+<body class="bg-gray-100">
+  <header class="bg-yellow-400 py-6 text-center font-bold text-2xl">🛒 Products - THAI BYTES</header>
+
+ <main class="p-6 grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+
+  <!-- 🔽 Category Filter -->
+  <div class="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <select id="categoryFilter" onchange="filterProducts()" class="p-2 border rounded">
+      <option value="all">All Categories</option>
+      <option value="Gaming PC">Gaming PC</option>
+      <option value="Office PC">Office PC</option>
+      <option value="Accessories">Accessories</option>
+    </select>
+  </div>
+
+  <!-- 🎮 Gaming PC -->
+  <div class="product bg-white p-6 rounded-lg shadow-lg text-center" data-category="Gaming PC">
+    <img src="images/gpc1.jpeg" class="w-full h-48 object-cover rounded mb-4" />
+    <h2 class="text-2xl font-bold mb-2">Ryzen 5 Gaming PC</h2>
+    <p class="text-lg mb-2">8-core, 16GB RAM, 512GB SSD, RTX 3060</p>
+    <p class="font-semibold text-green-600 text-xl">₹69,999</p>
+  </div>
+
+  <!-- 💼 Office PC -->
+  <div class="product bg-white p-6 rounded-lg shadow-lg text-center" data-category="Office PC">
+    <img src="images/of1.jpeg" class="w-full h-48 object-cover rounded mb-4" />
+    <h2 class="text-2xl font-bold mb-2">Intel i3 Office PC</h2>
+    <p class="text-lg mb-2">Dual-core, 8GB RAM, 256GB SSD, No GPU</p>
+    <p class="font-semibold text-green-600 text-xl">₹24,999</p>
+  </div>
+
+  <!-- 🎧 Accessories -->
+  <div class="product bg-white p-6 rounded-lg shadow-lg text-center" data-category="Accessories">
+    <img src="images/H1.webp" class="w-full h-48 object-cover rounded mb-4" />
+    <h2 class="text-2xl font-bold mb-2">Gaming Headset</h2>
+    <p class="text-lg mb-2">7.1 Surround Sound, Noise Cancelling</p>
+    <p class="font-semibold text-green-600 text-xl">₹1,999</p>
+  </div>
+
+</main>
+ <!-- ✅ Filter Script -->
+  <script>
+    function filterProducts() {
+      const selected = document.getElementById('categoryFilter').value;
+      const products = document.querySelectorAll('.product');
+
+      products.forEach(card => {
+        const category = card.dataset.category;
+        card.style.display = (selected === 'all' || category === selected) ? 'block' : 'none';
+      });
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,1379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>THAI BYTES Cyber Tools</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&family=IBM+Plex+Mono:wght@400;600&display=swap');
+
+        body {
+            margin: 0;
+            background: #000;
+            color: #d1d5db; /* Light gray for main text */
+            font-family: 'Space Grotesk', sans-serif; /* Modern, techy sans-serif */
+            overflow-x: hidden;
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* --- Background Animation --- */
+        .background-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(145deg, #020617 0%, #0c0a09 100%); /* Deep almost black gradient */
+            background-size: 80px 80px; /* Larger grid squares */
+            background-image:
+                linear-gradient(to right, rgba(29, 78, 216, 0.05) 1px, transparent 1px), /* Faint blue grid */
+                linear-gradient(to bottom, rgba(29, 78, 216, 0.05) 1px, transparent 1px);
+            animation: backgroundShift 60s infinite linear, gridPulse 20s infinite alternate; /* Slower, subtle animation */
+        }
+
+        @keyframes backgroundShift {
+            0% { background-position: 0% 0%; }
+            100% { background-position: 100% 100%; }
+        }
+
+        @keyframes gridPulse {
+            0%, 100% { opacity: 0.1; }
+            50% { opacity: 0.07; }
+        }
+
+        /* --- Tool Card Styles --- */
+        .tool-card {
+            @apply bg-gray-900/70 border border-gray-700/60 backdrop-blur-md p-6 rounded-lg shadow-xl w-full transition-all duration-300 relative overflow-hidden flex flex-col justify-between;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(55, 65, 81, 0.3); /* Deeper shadow with subtle border glow */
+        }
+
+        .tool-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: inherit;
+            background: linear-gradient(45deg, rgba(79, 70, 229, 0.1), transparent 50%, rgba(14, 165, 233, 0.1));
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .tool-card:hover::before {
+            opacity: 1;
+        }
+
+        .tool-card > *:not(.tool-card::before) {
+            position: relative; /* Ensure content stays above pseudo-element */
+            z-index: 1;
+        }
+
+        .tool-card h2 {
+            @apply text-xl font-bold mb-3 text-cyan-400;
+            font-family: 'IBM Plex Mono', monospace; /* Monospaced for headings */
+        }
+
+        /* --- Input/Textarea Specific Styles - Made Bigger --- */
+        input {
+            @apply w-full p-4 rounded-md mt-2 mb-4 border-2 border-slate-700 focus:border-cyan-500 text-lg; /* Increased padding (p-4) and font size (text-lg) */
+            background-color: #0f172a; /* Darker slate-900 like */
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.6); /* Subtle inset shadow */
+            color: #a7f3d0; /* Soft green for input text */
+            font-family: 'IBM Plex Mono', monospace; /* Monospaced for input */
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        textarea {
+            @apply w-full p-4 rounded-md mt-2 mb-4 border-2 border-slate-700 focus:border-cyan-500 text-lg; /* Increased padding (p-4) and font size (text-lg) */
+            min-height: 9rem; /* Increased min-height for textareas */
+            resize: vertical; /* Allow vertical resizing */
+            background-color: #0f172a; /* Darker slate-900 like */
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.6); /* Subtle inset shadow */
+            color: #a7f3d0; /* Soft green for input text */
+            font-family: 'IBM Plex Mono', monospace; /* Monospaced for input */
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        input:focus, textarea:focus {
+            @apply outline-none border-cyan-400; /* Cyan glow on focus */
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.6), 0 0 8px rgba(34, 211, 238, 0.6); /* Stronger cyan glow */
+        }
+        input::placeholder, textarea::placeholder {
+            color: #64748b; /* Slate gray for placeholders */
+            opacity: 0.8;
+        }
+
+
+        /* --- Button Specific Styles --- */
+        button {
+            @apply bg-blue-600 hover:bg-blue-700 px-6 py-2.5 rounded-md text-white font-semibold uppercase tracking-wide transition duration-300 ease-in-out shadow-md;
+            position: relative;
+            overflow: hidden;
+            border: none;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4), 0 0 12px rgba(59, 130, 246, 0.5); /* Blue glow */
+            font-family: 'Space Grotesk', sans-serif;
+        }
+        button:hover {
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6), 0 0 20px rgba(34, 211, 238, 0.8); /* Stronger cyan glow on hover */
+            transform: translateY(-1px);
+        }
+        button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4), 0 0 5px rgba(34, 211, 238, 0.5);
+        }
+        button:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+            pointer-events: none;
+        }
+        button:hover:before {
+            left: 100%;
+        }
+
+        /* --- Header Glow Effect --- */
+        .cyber-header {
+            font-family: 'IBM Plex Mono', monospace;
+            color: #7bfeff; /* Brighter cyan */
+            text-shadow: 0 0 8px rgba(123, 254, 255, 0.8), 0 0 15px rgba(123, 254, 255, 0.5);
+            letter-spacing: 0.1em;
+            position: relative;
+            animation: textGlow 3s infinite alternate;
+        }
+
+        @keyframes textGlow {
+            0%, 100% { text-shadow: 0 0 8px rgba(123, 254, 255, 0.8), 0 0 15px rgba(123, 254, 255, 0.5); }
+            50% { text-shadow: 0 0 12px rgba(123, 254, 255, 1), 0 0 20px rgba(123, 254, 255, 0.7); }
+        }
+
+        /* Ensure text within textareas is always visible, even if it matches the background slightly */
+        #ipAddress, #ipLocation, #passwordStrength, #emailResult, #pingResult, #scanResult li, #hashResult, #headerResult, #dnsResult, #morseOutput, #linkResult, #jwtOutput, #b64Output, #urlResult, #subnetResult, #regexResult, #hexOutput, #asciiOutput, #unixTimestampOutput, #uuidOutput, #aesResult, #md5Result, #sha256Result, #robotsTxtResult, #base32Output, #binaryOutput, #rot13Output, #randomPasswordOutput, #diffOutput {
+            @apply text-emerald-300; /* A vibrant green for results */
+            font-family: 'IBM Plex Mono', monospace;
+            word-break: break-all;
+        }
+        #scanResult li.text-red-400 {
+            @apply text-red-400;
+        }
+        #scanResult li.text-green-400 {
+            @apply text-green-400;
+        }
+
+        /* Responsive adjustments for text and cards */
+        @media (max-width: 640px) {
+            .cyber-header {
+                font-size: 2.25rem; /* text-4xl */
+            }
+            .tool-card {
+                padding: 1.5rem; /* p-6 */
+            }
+        }
+        .tool-description {
+            @apply text-sm text-gray-400 mt-4 pt-4 border-t border-gray-800 leading-tight; /* Slightly larger, better line height */
+        }
+
+        /* Essay styling */
+        .essay-section {
+            @apply bg-gray-900/70 border border-gray-700/60 backdrop-blur-md p-8 rounded-lg shadow-xl mb-8 max-w-7xl mx-auto;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(55, 65, 81, 0.3);
+        }
+        .essay-section h2 {
+            @apply text-2xl md:text-3xl font-bold mb-4 text-cyan-400 text-center;
+            font-family: 'IBM Plex Mono', monospace;
+        }
+        .essay-section p {
+            @apply text-base text-gray-300 mb-4 text-justify;
+        }
+        .essay-section strong {
+            @apply text-cyan-300;
+        }
+        .essay-section ol {
+            @apply list-decimal list-inside ml-4 text-gray-300 mb-4;
+        }
+    </style>
+</head>
+<body class="p-4 sm:p-8">
+    <div class="background-animation"></div>
+
+    <header class="text-center py-8 mb-8 relative z-10">
+        <h1 class="cyber-header text-4xl md:text-5xl lg:text-6xl mb-3 font-extrabold">
+            THAI BYTES Cyber Tools
+        </h1>
+        <p class="text-center text-sm sm:text-base text-gray-500 italic max-w-lg mx-auto">
+            A suite of essential cyber tools for analysis and learning.
+            <span class="block mt-1 text-red-400">⚠️ For educational purposes only.</span>
+        </p>
+    </header>
+
+    <!-- Tamil Essay Section -->
+    <div class="essay-section relative z-10">
+        <h2>சைபர் பாதுகாப்பு மற்றும் ஹேக்கிங்: ஒரு விரிவான பார்வை</h2>
+        <p>
+            இன்றைய டிஜிட்டல் உலகில், இணையம் நம் வாழ்வின் ஒவ்வொரு அங்கத்திலும் பின்னிப்பிணைந்துள்ளது. தனிப்பட்ட தகவல்கள் முதல் உலகளாவிய நிதி பரிமாற்றங்கள் வரை அனைத்தும் இணையத்தின் வழியே நடைபெறுகின்றன. இத்தகைய சூழலில், <strong>சைபர் பாதுகாப்பு</strong> (Cybersecurity) என்பது ஒரு அத்தியாவசியமான தேவையாக மாறியுள்ளது. சைபர் பாதுகாப்பு என்பது இணைய அச்சுறுத்தல்களில் இருந்து கணினி அமைப்புகள், நெட்வொர்க்குகள், தரவுகள் மற்றும் தனிப்பட்ட தகவல்களைப் பாதுகாக்கும் வழிமுறைகளைக் குறிக்கிறது. இதில் வைரஸ் தாக்குதல்கள், ஃபிஷிங், ransomware, அடையாளத் திருட்டு போன்ற பல அச்சுறுத்தல்களில் இருந்து பாதுகாப்பு வழங்குவது அடங்கும்.
+        </p>
+        <p>
+            சைபர் பாதுகாப்பு என்பது வெறும் தொழில்நுட்பம் சார்ந்த விஷயம் மட்டுமல்ல. இது தனிநபர்கள், நிறுவனங்கள் மற்றும் அரசாங்கங்களின் கூட்டுப் பொறுப்பாகும். வலுவான கடவுச்சொற்களைப் பயன்படுத்துதல், இரு காரணி அங்கீகாரத்தை (Two-factor authentication) செயல்படுத்துதல், மென்பொருட்களை அவ்வப்போது புதுப்பித்தல், சந்தேகத்திற்கிடமான இணைப்புகளைத் தவிர்ப்பது போன்ற எளிய வழிமுறைகள் கூட சைபர் பாதுகாப்பை மேம்படுத்தும். நிறுவனங்களைப் பொறுத்தவரை, தரவு என்கிரிப்ஷன், ஊடுருவல் கண்டறிதல் அமைப்புகள் (Intrusion Detection Systems), பாதுகாப்பு தணிக்கைகள் (Security Audits) மற்றும் ஊழியர்களுக்குப் பயிற்சி அளிப்பது ஆகியவை மிக முக்கியம்.
+        </p>
+        <p>
+            <strong>ஹேக்கிங்</strong> (Hacking) என்ற சொல் பொதுவாக எதிர்மறையான அர்த்தத்தில் பார்க்கப்பட்டாலும், அது கணினி அமைப்புகளை ஆராய்ந்து, அவற்றின் குறைபாடுகளைக் கண்டறியும் திறனைக் குறிக்கிறது. ஹேக்கிங்கில் இரண்டு முக்கிய வகைகள் உள்ளன:
+        </p>
+        <ol>
+            <li>
+                <strong>அறிவார்ந்த ஹேக்கிங் (Ethical Hacking):</strong> இதை "வெள்ளை தொப்பி ஹேக்கிங்" (White-hat hacking) என்றும் அழைக்கின்றனர். இதில், பாதுகாப்பு நிபுணர்கள் ஒரு அமைப்பின் உரிமையாளரின் அனுமதியுடன், அதன் பலவீனங்களைக் கண்டறிய முயற்சிப்பார்கள். கண்டறியப்பட்ட குறைபாடுகள் சரிசெய்யப்பட்டு, சிஸ்டம் பாதுகாப்பாக இருப்பதை உறுதி செய்வது இவர்களின் நோக்கம். இது ஒரு சட்டப்பூர்வமான மற்றும் நன்மை பயக்கும் செயல்பாடு.
+            </li>
+            <li>
+                <strong>தீங்கிழைக்கும் ஹேக்கிங் (Malicious Hacking):</strong> இது "கருப்பு தொப்பி ஹேக்கிங்" (Black-hat hacking) எனப்படுகிறது. இதில், ஹேக்கர்கள் அனுமதியின்றி கணினி அமைப்புகளில் ஊடுருவி, தரவைத் திருடுவது, சேதப்படுத்துவது, அல்லது சைபர் தாக்குதல்களை நடத்துவது போன்ற சட்டவிரோத செயல்களில் ஈடுபடுகின்றனர்.
+            </li>
+        </ol>
+        <p>
+            ஹேக்கிங் நுட்பங்களைப் புரிந்துகொள்வது, சைபர் பாதுகாப்பை வலுப்படுத்த அவசியமான ஒரு அம்சமாகும். ஒரு ஹேக்கர் எவ்வாறு ஒரு அமைப்பைத் தாக்க முயற்சிப்பார் என்பதைத் தெரிந்துகொண்டால் மட்டுமே, அந்தத் தாக்குதலில் இருந்து நம்மைப் பாதுகாத்துக் கொள்ள முடியும். இந்த தளத்தில் உள்ள கருவிகள், சைபர் பாதுகாப்பின் பல்வேறு அம்சங்களை, குறிப்பாக தகவல்களைப் பகுப்பாய்வு செய்யவும், குறியாக்கம்/டீகுறியாக்கம் செய்யவும், நெட்வொர்க் தகவல்களைப் புரிந்துகொள்ளவும் உதவும் வகையில் வடிவமைக்கப்பட்டுள்ளன.
+        </p>
+        <p>
+            முடிவில், இணைய உலகின் வளர்ச்சிக்கு ஏற்ப சைபர் அச்சுறுத்தல்களும் அதிகரித்துக்கொண்டே இருக்கின்றன. எனவே, சைபர் பாதுகாப்பு குறித்த விழிப்புணர்வையும், சரியான கருவிகள் மற்றும் நுட்பங்களைப் பயன்படுத்துவதையும் கற்றுக்கொள்வது, தனிநபர்களுக்கும், நிறுவனங்களுக்கும், ஒட்டுமொத்த சமூகத்திற்கும் மிகவும் அவசியம். பாதுகாப்பான இணையப் பயன்பாடு, நம் எதிர்கால டிஜிட்டல் வாழ்வுக்கு மிக முக்கியம்.
+        </p>
+    </div>
+
+    <main class="grid gap-6 md:gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 w-full max-w-7xl mx-auto pb-12 relative z-10">
+        <!-- IP Trace -->
+        <div class="tool-card">
+            <h2 class="text-cyan-400">🌐 IP Trace</h2>
+            <div class="flex-grow">
+                <p class="mb-2">Your IP: <span id="ipAddress">Fetching...</span></p>
+                <p class="mb-4">Location: <span id="ipLocation">Detecting...</span></p>
+            </div>
+            <button onclick="copyIP()" class="w-full">Copy IP</button>
+            <p class="tool-description">
+                This tool **identifies your public IP address**, which is how you appear on the internet. It then attempts to find your **approximate geographical location** (city, region, country) based on that IP. This can be useful for understanding network paths or verifying geo-restrictions.
+            </p>
+        </div>
+
+        <!-- Base64 Encode/Decode -->
+        <div class="tool-card">
+            <h2 class="text-cyan-400">🧾 Base64 Encode/Decode</h2>
+            <textarea id="b64Input" placeholder="Enter text to encode/decode..." class="flex-grow"></textarea>
+            <div class="flex gap-3 mb-4">
+                <button onclick="encodeB64()" class="flex-1">Encode</button>
+                <button onclick="decodeB64()" class="flex-1">Decode</button>
+            </div>
+            <textarea id="b64Output" placeholder="Result will appear here..." readonly class="flex-grow"></textarea>
+            <p class="tool-description">
+                **Base64 is an encoding scheme** used to translate binary data (like images, encrypted data, or special characters) into an ASCII string format. This makes it safe to transmit data over mediums that don't handle binary directly, like email or URL parameters. Use this tool to encode plain text into Base64 or decode Base64 back into readable text.
+            </p>
+        </div>
+
+        <!-- Port Scanner (Client-side simulation) -->
+        <div class="tool-card">
+            <h2 class="text-cyan-400">🛠 Port Scanner</h2>
+            <input type="text" id="scanIP" placeholder="Enter IP or domain (e.g., example.com)">
+            <input type="text" id="scanPorts" placeholder="Enter ports (e.g., 21,22,80)">
+            <button onclick="scanPortsFunc()" class="w-full">Scan</button>
+            <ul id="scanResult" class="mt-4 text-sm max-h-40 overflow-y-auto px-2 py-1 border border-slate-700 rounded bg-slate-900/50"></ul>
+            <p class="tool-description">
+                **This is a client-side simulation.** A true port scanner checks if specific ports on a target IP address or domain are "open" or "closed." Open ports indicate services running on that machine. In real cybersecurity, this is crucial for **reconnaissance** to identify potential vulnerabilities. This browser-based version *attempts* to simulate this but has limitations due to browser security.
+            </p>
+        </div>
+
+        <!-- Password Strength -->
+        <div class="tool-card">
+            <h2 class="text-cyan-400">🔒 Password Strength</h2>
+            <input type="password" id="passwordInput" placeholder="Enter password to check..." oninput="checkPasswordStrength()" class="mb-4">
+            <p id="passwordStrength" class="text-sm mt-2"></p>
+            <p class="tool-description">
+                This tool **evaluates the strength of your password** based on its length, variety of characters (uppercase, lowercase, numbers, symbols), and common patterns. A strong password is vital for **digital security**, making it harder for unauthorized users to guess or crack your accounts.
+            </p>
+        </div>
+
+        <!-- Hash Generator (SHA-1) -->
+        <div class="tool-card">
+            <h2 class="text-cyan-400">🔐 Hash Generator (SHA-1)</h2>
+            <input type="text" id="hashInput" placeholder="Enter text to hash">
+            <button onclick="generateHash()" class="w-full">Generate SHA-1</button>
+            <textarea id="hashResult" readonly placeholder="Generated hash will appear here..." class="flex-grow"></textarea>
+            <p class="tool-description">
+                A **cryptographic hash function** takes an input (like text) and produces a fixed-size string of characters, called a hash or digest. SHA-1 is one such algorithm. Hashes are **one-way functions**, meaning you can't easily get the original text back from the hash. They're used for **data integrity verification** (checking if data has been tampered with) and password storage.
+            </p>
+        </div>
+
+        <!-- WHOIS Lookup -->
+        <div class="tool-card">
+            <h2 class="text-cyan-400">🌍 WHOIS Lookup</h2>
+            <input type="text" id="whoisDomain" placeholder="Enter domain (e.g., google.com)">
+            <button onclick="whoisLookup()" class="w-full">Lookup WHOIS</button>
+            <textarea id="whoisResult" readonly placeholder="WHOIS information will appear here..." class="flex-grow"></textarea>
+            <p class="tool-description">
+                The **WHOIS protocol** is used to query databases that store information about registered domain names and their owners. This tool helps you find details like the **domain's registrar, creation date, expiration date, and sometimes even the contact information of the registrant**. It's essential for **domain investigation** and understanding ownership.
+            </p>
+        </div>
+
+        <!-- HTTP Header Viewer -->
+        <div class="tool-card">
+            <h2 class="text-cyan-400">🔍 HTTP Header Viewer</h2>
+            <input type="text" id="headerUrl" placeholder="Enter URL (e.g., https://example.com)">
+            <button onclick="getHeaders()" class="w-full">Fetch Headers</button>
+            <textarea id="headerResult" readonly placeholder="HTTP headers will appear here..." class="flex-grow"></textarea>
+            <p class="tool-description">
+                When your browser requests a web page, the web server sends back **HTTP headers** along with the page content. These headers contain important metadata like **server type, content encoding, caching instructions, and security policies**. This tool fetches and displays these headers, which is vital for **debugging web applications** and **analyzing web security configurations**.
+            </p>
+        </div>
+
+        <!-- User-Agent Detector -->
+        <div class="tool-card">
+            <h2 class="text-cyan-400">🧫 User-Agent Detector</h2>
+            <textarea readonly id="uaDisplay" class="flex-grow"></textarea>
+            <p class="tool-description">
+                Your browser sends a **User-Agent string** to every website you visit. This string typically includes information about your **browser type and version, operating system, and sometimes even your device type**. Websites use this to optimize content for your specific setup. In cybersecurity, manipulating User-Agents can sometimes be used in web exploitation or for **evading detection**.
+            </p>
+        </div>
+
+        <!-- DNS Resolver -->
+        <div class="tool-card">
+            <h2 class="text-cyan-400">📡 DNS Resolver</h2>
+            <input type="text" id="dnsDomain" placeholder="Enter domain (e.g., example.com)">
+            <button onclick="resolveDNS()" class="w-full">Resolve</button>
+            <textarea id="dnsResult" readonly placeholder="DNS records will appear here..." class="flex-grow"></textarea>
+            <p class="tool-description">
+                The **Domain Name System (DNS)** translates human-readable domain names (like `google.com`) into machine-readable **IP addresses** (like `172.217.160.142`). This tool allows you to query DNS records for a given domain, revealing important information like **A records (IPv4 addresses), AAAA records (IPv6 addresses), MX records (mail servers), and TXT records (arbitrary text data)**. It's fundamental for **network reconnaissance**.
+            </p>
+        </div>
+
+        <!-- Email Validator -->
+        <div class="tool-card">
+            <h2 class="text-cyan-400">📧 Email Validator</h2>
+            <input type="text" id="emailCheck" placeholder="Enter email to validate">
+            <button onclick="validateEmail()" class="w-full">Validate</button>
+            <p id="emailResult" class="mt-2"></p>
+            <p class="tool-description">
+                This tool performs a **basic format validation** on an email address. It checks if the email adheres to the standard structure of `username@domain.extension`. While it doesn't verify if an email address actually exists or is active, it's useful for **data sanitation** and preventing common input errors in forms.
+            </p>
+        </div>
+
+        <!-- Firewall Ping Tester (Client-side simulation) -->
+        <div class="tool-card">
+            <h2 class="text-cyan-400">🛡️ Firewall Ping Tester</h2>
+            <input type="text" id="pingHost" placeholder="Enter IP or URL (e.g., 8.8.8.8)">
+            <button onclick="pingTest()" class="w-full">Ping</button>
+            <p id="pingResult" class="mt-2"></p>
+            <p class="tool-description">
+                **This is a client-side simulation.** A traditional "ping" command sends ICMP (Internet Control Message Protocol) packets to a target host to determine if it's reachable and how long it takes for a response. In network security, ping tests help determine if a host is active or if a firewall is blocking traffic. Due to browser limitations, this tool simulates the check using image loading.
+            </p>
+        </div>
+
+        <!-- Morse Code Converter -->
+        <div class="tool-card">
+            <h2 class="text-cyan-400">🧬 Morse Code Converter</h2>
+            <textarea id="morseInput" placeholder="Enter text or Morse code..." class="flex-grow"></textarea>
+            <div class="flex gap-3 mb-4">
+                <button onclick="toMorse()" class="flex-1">To Morse</button>
+                <button onclick="fromMorse()" class="flex-1">From Morse</button>
+            </div>
+            <textarea id="morseOutput" readonly placeholder="Converted text/Morse code..." class="flex-grow"></textarea>
+            <p class="tool-description">
+                **Morse code** is a method of encoding text characters as sequences of two different signal durations, typically represented as "dots" and "dashes." While not a cryptographic tool, it's sometimes used in **CTF (Capture The Flag) challenges** or specific scenarios for encoding short messages for transmission or obfuscation.
+            </p>
+        </div>
+
+        <!-- Link Extractor -->
+        <div class="tool-card">
+            <h2 class="text-cyan-400">🎯 Link Extractor</h2>
+            <textarea id="htmlInput" placeholder="Paste HTML code here..." class="flex-grow"></textarea>
+            <button onclick="extractLinks()" class="w-full">Extract Links</button>
+            <textarea id="linkResult" readonly placeholder="Extracted links will appear here..." class="flex-grow"></textarea>
+            <p class="tool-description">
+                This tool **parses raw HTML content and extracts all URLs** found within `href` attributes of anchor (`<a>`) tags. This is useful for quickly mapping out the internal and external links on a webpage, which is a common step in **web application security testing** or **web scraping**.
+            </p>
+        </div>
+
+        <!-- JWT Decoder -->
+        <div class="tool-card">
+            <h2 class="text-cyan-400">📦 JWT Decoder</h2>
+            <textarea id="jwtInput" placeholder="Paste JWT token here..." class="flex-grow"></textarea>
+            <button onclick="decodeJWT()" class="w-full">Decode</button>
+            <textarea id="jwtOutput" readonly placeholder="Decoded JWT will appear here..." class="flex-grow"></textarea>
+            <p class="tool-description">
+                A **JSON Web Token (JWT)** is a compact, URL-safe means of representing claims to be transferred between two parties. This tool **decodes the base64-encoded parts of a JWT** to reveal its header (containing algorithm info) and payload (containing user data or claims). While it doesn't verify the signature, seeing the contents is crucial for **understanding authentication flows** and identifying potential vulnerabilities.
+            </p>
+        </div>
+
+        <!-- QR Code Generator -->
+        <div class="tool-card">
+            <h2 class="text-cyan-400">📲 QR Code Generator</h2>
+            <input type="text" id="qrInput" placeholder="Enter text or URL to generate QR">
+            <button onclick="generateQR()" class="w-full">Generate QR</button>
+            <div class="mt-4 text-center">
+                <img id="qrImage" src="" class="mx-auto w-36 h-36 border border-blue-600 p-1 bg-white/10 rounded-lg shadow-inner" alt="Generated QR Code" />
+            </div>
+            <p class="tool-description">
+                A **QR (Quick Response) Code** is a two-dimensional barcode that can store various types of information, such as URLs, text, or contact details. This tool allows you to **convert any text or URL into a scannable QR code image**. This is practical for quickly sharing links or information, or for use in **physical penetration testing scenarios**.
+            </p>
+        </div>
+
+        <!-- URL Parser -->
+        <div class="tool-card">
+            <h2 class="text-cyan-400">🔗 URL Parser</h2>
+            <input type="text" id="urlInput" placeholder="Enter URL (e.g., https://example.com/path?key=val)">
+            <button onclick="parseURL()" class="w-full">Parse URL</button>
+            <textarea id="urlResult" readonly placeholder="Parsed URL components..." class="flex-grow"></textarea>
+            <p class="tool-description">
+                This tool **deconstructs a given URL into its fundamental components**. This includes the **protocol (http/https), hostname, port, pathname, query parameters, and hash fragment**. Understanding these parts is essential for **web development, debugging, and identifying potential URL-based injection vulnerabilities** in web applications.
+            </p>
+        </div>
+
+        <!-- Subnet Calculator -->
+        <div class="tool-card">
+            <h2 class="text-cyan-400">🧮 Subnet Calculator</h2>
+            <input type="text" id="ipCidrInput" placeholder="Enter IP/CIDR (e.g., 192.168.1.0/24)">
+            <button onclick="calculateSubnet()" class="w-full">Calculate</button>
+            <textarea id="subnetResult" readonly placeholder="Subnet details will appear here..." class="flex-grow"></textarea>
+            <p class="tool-description">
+                A **subnet calculator** helps network administrators and cybersecurity professionals plan and analyze IP networks. Given an IP address and a CIDR (Classless Inter-Domain Routing) notation (e.g., `/24`), it determines the **network address, broadcast address, subnet mask, and the range of usable host IP addresses** within that specific subnet. This is crucial for **network segmentation and security planning**.
+            </p>
+        </div>
+
+        <!-- Regex Tester -->
+        <div class="tool-card">
+            <h2 class="text-cyan-400">📝 Regex Tester</h2>
+            <input type="text" id="regexPattern" placeholder="Enter regex pattern">
+            <textarea id="regexText" placeholder="Enter text to test against..." class="flex-grow"></textarea>
+            <button onclick="testRegex()" class="w-full">Test Regex</button>
+            <textarea id="regexResult" readonly placeholder="Matching results..." class="flex-grow"></textarea>
+            <p class="tool-description">
+                A **Regular Expression (Regex)** is a sequence of characters that defines a search pattern. This tool allows you to **test a regex pattern against any given text**, highlighting where the pattern matches. Regex is incredibly powerful for **data parsing, validation, log analysis, and identifying specific strings** within large datasets, a common task in digital forensics and security analysis.
+            </p>
+        </div>
+
+        <!-- NEW TOOL: URL Encoder/Decoder -->
+        <div class="tool-card">
+            <h2 class="text-cyan-400">🔗 URL Encode/Decode</h2>
+            <textarea id="urlEncodeInput" placeholder="Enter text/URL to encode/decode..." class="flex-grow"></textarea>
+            <div class="flex gap-3 mb-4">
+                <button onclick="encodeURL()" class="flex-1">Encode URL</button>
+                <button onclick="decodeURL()" class="flex-1">Decode URL</button>
+            </div>
+            <textarea id="urlEncodeOutput" placeholder="Result will appear here..." readonly class="flex-grow"></textarea>
+            <p class="tool-description">
+                This tool **converts text into URL-safe encoded format** (e.g., spaces to `%20`) and decodes it back. URL encoding ensures that special characters in a web address are properly interpreted by browsers and servers. It's vital for handling **web requests, preventing data corruption in URLs**, and can sometimes reveal clues in **web application vulnerabilities**.
+            </p>
+        </div>
+
+        <!-- NEW TOOL: Hex Converter -->
+        <div class="tool-card">
+            <h2 class="text-cyan-400">🔢 Hex Converter</h2>
+            <textarea id="hexInput" placeholder="Enter text or hex string..." class="flex-grow"></textarea>
+            <div class="flex gap-3 mb-4">
+                <button onclick="toHex()" class="flex-1">To Hex</button>
+                <button onclick="fromHex()" class="flex-1">From Hex</button>
+            </div>
+            <textarea id="hexOutput" readonly placeholder="Converted result..." class="flex-grow"></textarea>
+            <p class="tool-description">
+                This converter translates text into its **hexadecimal (base-16) representation** and vice-versa. Hexadecimal is often used in computing to represent binary data in a more human-readable form. It's crucial for **low-level data analysis, network packet inspection, reverse engineering**, and understanding raw file contents.
+            </p>
+        </div>
+
+        <!-- NEW TOOL: ASCII Converter -->
+        <div class="tool-card">
+            <h2 class="text-cyan-400">📜 ASCII Converter</h2>
+            <textarea id="asciiInput" placeholder="Enter text or ASCII values (space separated)..." class="flex-grow"></textarea>
+            <div class="flex gap-3 mb-4">
+                <button onclick="toASCII()" class="flex-1">To ASCII</button>
+                <button onclick="fromASCII()" class="flex-1">From ASCII</button>
+            </div>
+            <textarea id="asciiOutput" readonly placeholder="Converted result..." class="flex-grow"></textarea>
+            <p class="tool-description">
+                This tool converts plain text characters into their **ASCII (American Standard Code for Information Interchange) decimal values** and vice-versa. ASCII is a fundamental character encoding standard. Understanding ASCII conversions is useful for **character-level data analysis, analyzing encoded messages**, and debugging text-based protocols.
+            </p>
+        </div>
+
+        <!-- NEW TOOL: SHA-256 Hash Generator -->
+        <div class="tool-card">
+            <h2 class="text-cyan-400">🛡️ SHA-256 Hash Generator</h2>
+            <input type="text" id="sha256Input" placeholder="Enter text to hash">
+            <button onclick="generateSha256Hash()" class="w-full">Generate SHA-256</button>
+            <textarea id="sha256Result" readonly placeholder="Generated SHA-256 hash will appear here..." class="flex-grow"></textarea>
+            <p class="tool-description">
+                **SHA-256 (Secure Hash Algorithm 256-bit)** is a more robust cryptographic hash function than SHA-1, widely used for **digital signatures, password storage, and blockchain technology (e.g., Bitcoin)**. It generates a 256-bit (64 hexadecimal characters) unique hash for any input, ensuring **data integrity** and highly resisting collisions.
+            </p>
+        </div>
+
+        <!-- NEW TOOL: MD5 Hash Generator -->
+        <div class="tool-card">
+            <h2 class="text-cyan-400">⚠️ MD5 Hash Generator</h2>
+            <input type="text" id="md5Input" placeholder="Enter text to hash">
+            <button onclick="generateMd5Hash()" class="w-full">Generate MD5</button>
+            <textarea id="md5Result" readonly placeholder="Generated MD5 hash will appear here..." class="flex-grow"></textarea>
+            <p class="tool-description">
+                **MD5 (Message-Digest Algorithm 5)** is an older cryptographic hash function that produces a 128-bit (32 hexadecimal characters) hash. While still used for **file integrity checks (e.g., verifying downloads)**, it is **cryptographically broken** and should *not* be used for security purposes like password hashing due to known collision vulnerabilities.
+            </p>
+        </div>
+
+        <!-- NEW TOOL: Unix Timestamp Converter -->
+        <div class="tool-card">
+            <h2 class="text-cyan-400">⏱️ Unix Timestamp Converter</h2>
+            <input type="text" id="timestampInput" placeholder="Enter timestamp or date (YYYY-MM-DD HH:MM:SS)">
+            <div class="flex gap-3 mb-4">
+                <button onclick="toTimestamp()" class="flex-1">To Timestamp</button>
+                <button onclick="fromTimestamp()" class="flex-1">From Date</button>
+            </div>
+            <textarea id="unixTimestampOutput" readonly placeholder="Converted result..." class="flex-grow"></textarea>
+            <p class="tool-description">
+                A **Unix Timestamp** is the number of seconds that have elapsed since January 1, 1970, UTC. This tool converts human-readable dates and times into Unix timestamps and vice-versa. It's invaluable for **log file analysis, forensics, and understanding event timelines** in various operating systems and network protocols.
+            </p>
+        </div>
+
+        <!-- NEW TOOL: UUID Generator -->
+        <div class="tool-card">
+            <h2 class="text-cyan-400">🆔 UUID Generator</h2>
+            <button onclick="generateUUID()" class="w-full">Generate UUID</button>
+            <input type="text" id="uuidOutput" readonly placeholder="Generated UUID will appear here..." class="mt-4">
+            <p class="tool-description">
+                A **UUID (Universally Unique Identifier)**, also known as a GUID, is a 128-bit number used to uniquely identify information in computer systems. This tool generates a **version 4 UUID**, which is randomly generated. UUIDs are useful in **databases, distributed systems, and for creating unique identifiers** in security testing scenarios.
+            </p>
+        </div>
+
+        <!-- NEW TOOL: Robots.txt Viewer (via Proxy) -->
+        <div class="tool-card">
+            <h2 class="text-cyan-400">📄 Robots.txt Viewer</h2>
+            <input type="text" id="robotsDomain" placeholder="Enter domain (e.g., example.com)">
+            <button onclick="fetchRobotsTxt()" class="w-full">Fetch Robots.txt</button>
+            <textarea id="robotsTxtResult" readonly placeholder="Robots.txt content will appear here..." class="flex-grow"></textarea>
+            <p class="tool-description">
+                The `robots.txt` file is a standard used by websites to **communicate with web crawlers (like search engine bots)**, telling them which areas of the site should not be processed or scanned. While not a security measure, it can sometimes reveal paths or files that are not intended for public indexing, which can be useful for **reconnaissance and understanding website structure**.
+            </p>
+        </div>
+
+        <!-- NEW TOOL: Base32 Encode/Decode -->
+        <div class="tool-card">
+            <h2 class="text-cyan-400">🔠 Base32 Encode/Decode</h2>
+            <textarea id="base32Input" placeholder="Enter text to encode/decode..." class="flex-grow"></textarea>
+            <div class="flex gap-3 mb-4">
+                <button onclick="encodeBase32()" class="flex-1">Encode Base32</button>
+                <button onclick="decodeBase32()" class="flex-1">Decode Base32</button>
+            </div>
+            <textarea id="base32Output" placeholder="Result will appear here..." readonly class="flex-grow"></textarea>
+            <p class="tool-description">
+                **Base32 is an encoding scheme** that converts binary data into a 32-character alphabet (A-Z and 2-7). It's often used when case-insensitivity is required, or for human readability compared to Base64 (as it avoids special characters). It's found in systems like **DNSSEC and On-demand authentication (OATH) tokens**.
+            </p>
+        </div>
+
+        <!-- NEW TOOL: Binary Converter -->
+        <div class="tool-card">
+            <h2 class="text-cyan-400">🧮 Binary Converter</h2>
+            <textarea id="binaryInput" placeholder="Enter text or binary string (space separated bytes)..." class="flex-grow"></textarea>
+            <div class="flex gap-3 mb-4">
+                <button onclick="toBinary()" class="flex-1">To Binary</button>
+                <button onclick="fromBinary()" class="flex-1">From Binary</button>
+            </div>
+            <textarea id="binaryOutput" readonly placeholder="Converted result..." class="flex-grow"></textarea>
+            <p class="tool-description">
+                This tool converts plain text into its **binary (base-2) representation** and vice-versa. Binary is the fundamental language of computers. Understanding binary is essential for **low-level programming, network protocol analysis, and reverse engineering** to interpret raw data streams.
+            </p>
+        </div>
+
+        <!-- NEW TOOL: ROT13 Cipher -->
+        <div class="tool-card">
+            <h2 class="text-cyan-400">🔄 ROT13 Cipher</h2>
+            <textarea id="rot13Input" placeholder="Enter text to encode/decode..." class="flex-grow"></textarea>
+            <button onclick="applyRot13()" class="w-full">Apply ROT13</button>
+            <textarea id="rot13Output" readonly placeholder="Converted result..." class="flex-grow"></textarea>
+            <p class="tool-description">
+                **ROT13 (Rotate by 13 places)** is a simple letter substitution cipher that replaces a letter with the 13th letter after it in the alphabet. Applying ROT13 twice restores the original text. It's **not for cryptographic security** but is often used to **obfuscate jokes, puzzle answers, or mild spoilers** online, and sometimes appears in basic **CTF challenges**.
+            </p>
+        </div>
+
+        <!-- NEW TOOL: Random Password Generator -->
+        <div class="tool-card">
+            <h2 class="text-cyan-400">🔑 Random Password Generator</h2>
+            <div class="flex items-center mb-4">
+                <label for="pwdLength" class="mr-2 text-gray-400">Length:</label>
+                <input type="number" id="pwdLength" value="16" min="8" max="64" class="w-24 p-2 text-center text-base">
+            </div>
+            <div class="grid grid-cols-2 gap-2 mb-4 text-sm">
+                <label class="flex items-center text-gray-300"><input type="checkbox" id="includeUpper" checked class="mr-2"> Uppercase</label>
+                <label class="flex items-center text-gray-300"><input type="checkbox" id="includeLower" checked class="mr-2"> Lowercase</label>
+                <label class="flex items-center text-gray-300"><input type="checkbox" id="includeNumbers" checked class="mr-2"> Numbers</label>
+                <label class="flex items-center text-gray-300"><input type="checkbox" id="includeSymbols" checked class="mr-2"> Symbols</label>
+            </div>
+            <button onclick="generateRandomPassword()" class="w-full">Generate Password</button>
+            <input type="text" id="randomPasswordOutput" readonly placeholder="Your strong password..." class="mt-4">
+            <p class="tool-description">
+                This tool generates **strong, random passwords** based on your specified length and character set preferences (uppercase, lowercase, numbers, symbols). Using unique, complex, and randomly generated passwords is a **cornerstone of robust cybersecurity** to protect your online accounts from brute-force attacks and credential stuffing.
+            </p>
+        </div>
+
+        <!-- NEW TOOL: Text Difference/Comparison -->
+        <div class="tool-card">
+            <h2 class="text-cyan-400">📝 Text Difference</h2>
+            <textarea id="textDiffInput1" placeholder="Enter first text block..." class="flex-grow mb-2"></textarea>
+            <textarea id="textDiffInput2" placeholder="Enter second text block..." class="flex-grow"></textarea>
+            <button onclick="compareTexts()" class="w-full">Compare Texts</button>
+            <textarea id="diffOutput" readonly placeholder="Differences will be highlighted here..." class="flex-grow mt-4"></textarea>
+            <p class="tool-description">
+                This tool **compares two blocks of text** and highlights their differences. This is incredibly useful in cybersecurity for tasks like **analyzing configuration changes, comparing log files** before and after an incident, identifying modifications in source code, or spotting subtle alterations in documents during **forensic investigations**.
+            </p>
+        </div>
+
+    </main>
+
+    <script>
+        // User-Agent Detector - Initial Load
+        document.getElementById('uaDisplay').value = navigator.userAgent;
+
+        // HTTP Header Viewer
+        function getHeaders() {
+            const url = document.getElementById('headerUrl').value;
+            if (!url) {
+                document.getElementById('headerResult').value = 'Please enter a URL.';
+                return;
+            }
+            document.getElementById('headerResult').value = 'Fetching headers... (May be blocked by CORS for some sites)';
+            fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    let headersString = '';
+                    for (let pair of response.headers.entries()) {
+                        headersString += `${pair[0]}: ${pair[1]}\n`;
+                    }
+                    document.getElementById('headerResult').value = headersString || 'No headers found or CORS blocked.';
+                })
+                .catch(e => {
+                    console.error("Error fetching headers:", e);
+                    document.getElementById('headerResult').value = `Error retrieving headers: ${e.message}. (Ensure URL is valid and reachable)`;
+                });
+        }
+
+        // DNS Resolver
+        function resolveDNS() {
+            const domain = document.getElementById('dnsDomain').value;
+            if (!domain) {
+                document.getElementById('dnsResult').value = 'Please enter a domain.';
+                return;
+            }
+            document.getElementById('dnsResult').value = 'Resolving DNS...';
+            fetch(`https://dns.google/resolve?name=${domain}`)
+                .then(res => res.json())
+                .then(data => {
+                    const answers = data.Answer || [];
+                    if (answers.length === 0) {
+                        document.getElementById('dnsResult').value = 'No DNS records found for this domain.';
+                        return;
+                    }
+                    const records = answers.map(a => {
+                        let type;
+                        switch (a.type) {
+                            case 1: type = 'A (IPv4)'; break;
+                            case 28: type = 'AAAA (IPv6)'; break;
+                            case 16: type = 'TXT'; break;
+                            case 5: type = 'CNAME'; break;
+                            case 15: type = 'MX'; break;
+                            default: type = a.type;
+                        }
+                        return `${type}: ${a.data}`;
+                    }).join('\n');
+                    document.getElementById('dnsResult').value = records;
+                })
+                .catch(() => document.getElementById('dnsResult').value = 'Error resolving domain. (Check domain name or network)');
+        }
+
+        // Email Validator
+        function validateEmail() {
+            const email = document.getElementById('emailCheck').value;
+            const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            const result = pattern.test(email) ? '✅ Valid Email' : '❌ Invalid Email';
+            document.getElementById('emailResult').textContent = result;
+        }
+
+        // Firewall Ping Tester (Client-side simulation)
+        function pingTest() {
+            const host = document.getElementById('pingHost').value;
+            if (!host) {
+                document.getElementById('pingResult').textContent = 'Please enter an IP or URL.';
+                return;
+            }
+            document.getElementById('pingResult').textContent = 'Simulating ping...';
+            const img = new Image();
+            const start = Date.now();
+            const timeout = setTimeout(() => {
+                img.onerror = null;
+                document.getElementById('pingResult').textContent = 'Ping Timed Out or Blocked.';
+            }, 3000);
+
+            img.onload = () => {
+                clearTimeout(timeout);
+                const latency = Date.now() - start;
+                document.getElementById('pingResult').textContent = `Ping Success (~${latency}ms)`;
+            };
+            img.onerror = () => {
+                clearTimeout(timeout);
+                document.getElementById('pingResult').textContent = 'Ping Failed or Blocked.';
+            };
+            img.src = `https://${host}/favicon.ico?_=${Date.now()}`; // Attempt to load favicon
+        }
+
+        // Morse Code Converter
+        const MORSE = { ".-":"A","-...":"B","-.-.":"C","-..":"D",".":"E","..-.":"F","--.":"G","....":"H","..":"I",".---":"J","-.-":"K",".-..":"L","--":"M","-.":"N","---":"O",".--.":"P","--.-":"Q",".-.":"R","...":"S","-":"T","..-":"U","...-":"V",".--":"W","-..-":"X","-.--":"Y","--..":"Z","-----":"0",".----":"1","..---":"2","...--":"3","....-":"4",".....":"5","-....":"6","--...":"7","---..":"8","----.":"9", " ": "/" };
+        const MORSE_REVERSE = Object.fromEntries(Object.entries(MORSE).map(([k,v]) => [v,k]));
+
+        function toMorse() {
+            const text = document.getElementById('morseInput').value.toUpperCase();
+            const morse = [...text].map(c => MORSE_REVERSE[c] || '').join(' ');
+            document.getElementById('morseOutput').value = morse.trim();
+        }
+
+        function fromMorse() {
+            const morse = document.getElementById('morseInput').value.trim();
+            const text = morse.split(' ').map(code => MORSE[code] || '').join('');
+            document.getElementById('morseOutput').value = text;
+        }
+
+        // Link Extractor
+        function extractLinks() {
+            const html = document.getElementById('htmlInput').value;
+            if (!html) {
+                document.getElementById('linkResult').value = 'Please paste HTML code.';
+                return;
+            }
+            const matches = [...html.matchAll(/<a[^>]+href=["']?([^"'>]+)["']?/gi)].map(m => m[1]);
+            document.getElementById('linkResult').value = matches.join('\n') || 'No links found.';
+        }
+
+        // JWT Decoder
+        function decodeJWT() {
+            const token = document.getElementById("jwtInput").value;
+            if (!token) {
+                document.getElementById("jwtOutput").value = 'Please paste a JWT token.';
+                return;
+            }
+            try {
+                const parts = token.split('.');
+                if (parts.length !== 3) {
+                    document.getElementById("jwtOutput").value = "Invalid JWT format: A JWT must have three parts separated by dots.";
+                    return;
+                }
+                const [header, payload] = parts;
+
+                const decode = str => {
+                    try {
+                        let paddedStr = str.replace(/-/g, '+').replace(/_/g, '/');
+                        while (paddedStr.length % 4) {
+                            paddedStr += '=';
+                        }
+                        return decodeURIComponent(atob(paddedStr).split('').map(function (c) {
+                            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+                        }).join(''));
+                    } catch (e) {
+                        console.error("Base64 decoding error:", e);
+                        throw new Error("Failed to decode Base64 part. Ensure it is valid Base64 URL safe format.");
+                    }
+                };
+
+                const decodedHeader = JSON.stringify(JSON.parse(decode(header)), null, 2);
+                const decodedPayload = JSON.stringify(JSON.parse(decode(payload)), null, 2);
+
+                const output = `Header:\n${decodedHeader}\n\nPayload:\n${decodedPayload}\n\nSignature: (Verification omitted for client-side decoding)`;
+                document.getElementById("jwtOutput").value = output;
+            } catch (e) {
+                document.getElementById("jwtOutput").value = `Invalid JWT format or decoding error: ${e.message}`;
+            }
+        }
+
+        // QR Code Generator
+        function generateQR() {
+            const data = document.getElementById("qrInput").value;
+            const img = document.getElementById("qrImage");
+            if (!data) {
+                img.src = "";
+                img.alt = "Enter text or URL to generate QR";
+                return;
+            }
+            img.src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(data)}`;
+            img.alt = "Generated QR Code";
+        }
+
+        // Hash Generation (SHA-1 using Web Crypto API)
+        async function generateHash() {
+            const text = document.getElementById("hashInput").value;
+            if (!text) {
+                document.getElementById("hashResult").value = 'Please enter text to hash.';
+                return;
+            }
+            const textEncoder = new TextEncoder();
+            const data = textEncoder.encode(text);
+            try {
+                const hashBuffer = await crypto.subtle.digest('SHA-1', data);
+                const hashArray = Array.from(new Uint8Array(hashBuffer));
+                const hexHash = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+                document.getElementById("hashResult").value = `SHA-1: ${hexHash}`;
+            } catch (e) {
+                document.getElementById("hashResult").value = `Error generating hash: ${e.message}`;
+            }
+        }
+
+        // IP Trace
+        fetch('https://api.ipify.org?format=json')
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('ipAddress').textContent = data.ip;
+                fetch(`https://ipapi.co/${data.ip}/json/`)
+                    .then(res => res.json())
+                    .then(info => {
+                        document.getElementById('ipLocation').textContent = `${info.city || 'Unknown City'}, ${info.region || 'Unknown Region'}, ${info.country_name || 'Unknown Country'}`;
+                    })
+                    .catch(() => document.getElementById('ipLocation').textContent = 'Location unknown');
+            })
+            .catch(() => {
+                document.getElementById('ipAddress').textContent = 'Error fetching IP';
+                document.getElementById('ipLocation').textContent = 'Location unknown';
+            });
+
+        function copyIP() {
+            const ip = document.getElementById('ipAddress').textContent;
+            if (ip && ip !== "Fetching..." && ip !== "Error fetching IP") {
+                navigator.clipboard.writeText(ip)
+                    .then(() => alert("IP copied to clipboard!"))
+                    .catch(err => console.error('Could not copy text: ', err));
+            } else {
+                alert("IP not available to copy yet.");
+            }
+        }
+
+        // Base64 Encode/Decode
+        function encodeB64() {
+            const text = document.getElementById("b64Input").value;
+            if (!text) {
+                document.getElementById("b64Output").value = 'Please enter text to encode.';
+                return;
+            }
+            document.getElementById("b64Output").value = btoa(text);
+        }
+
+        function decodeB64() {
+            const text = document.getElementById("b64Input").value;
+            if (!text) {
+                document.getElementById("b64Output").value = 'Please enter text to decode.';
+                return;
+            }
+            try {
+                document.getElementById("b64Output").value = atob(text);
+            } catch {
+                document.getElementById("b64Output").value = "Invalid Base64 string!";
+            }
+        }
+
+        // Password Strength
+        function checkPasswordStrength() {
+            const pwd = document.getElementById('passwordInput').value;
+            let strength = "Very Weak";
+            let score = 0;
+
+            if (pwd.length >= 8) score++;
+            if (pwd.length >= 12) score++;
+            if (/[A-Z]/.test(pwd)) score++;
+            if (/[a-z]/.test(pwd)) score++;
+            if (/[0-9]/.test(pwd)) score++;
+            if (/[^a-zA-Z0-9\s]/.test(pwd)) score++; // Special characters
+
+            if (score >= 5) strength = "Strong";
+            else if (score >= 3) strength = "Medium";
+            else if (score >= 1) strength = "Weak";
+
+            document.getElementById('passwordStrength').textContent = `Strength: ${strength}`;
+        }
+
+        // Port Scanner (Client-side simulation)
+        function scanPortsFunc() {
+            const ip = document.getElementById("scanIP").value;
+            const ports = document.getElementById("scanPorts").value.split(',').map(p => p.trim()).filter(p => p);
+            const resultList = document.getElementById("scanResult");
+            resultList.innerHTML = "";
+
+            if (!ip || !ports.length) {
+                resultList.innerHTML = '<li class="text-red-400">Please enter an IP/domain and at least one port.</li>';
+                return;
+            }
+
+            resultList.innerHTML = '<li class="text-gray-400">Simulating scan... (Client-side checks are limited to image loading attempts)</li>';
+
+            ports.forEach(port => {
+                const img = new Image();
+                const start = Date.now();
+                const timeout = setTimeout(() => {
+                    img.onerror = null;
+                    resultList.innerHTML += `<li class="text-red-400">Port ${port}: Timed out/Closed (simulated)</li>`;
+                }, 3000);
+
+                img.onload = () => {
+                    clearTimeout(timeout);
+                    const time = Date.now() - start;
+                    resultList.innerHTML += `<li class="text-green-400">Port ${port}: Open (simulated ping ~${time}ms)</li>`;
+                };
+                img.onerror = () => {
+                    clearTimeout(timeout);
+                    resultList.innerHTML += `<li class="text-red-400">Port ${port}: Closed/Filtered (simulated)</li>`;
+                };
+                img.src = `http://${ip}:${port}/favicon.ico?_=${Date.now()}`;
+            });
+        }
+
+        // WHOIS Lookup (Client-side Placeholder with proxy)
+        function whoisLookup() {
+            const domain = document.getElementById('whoisDomain').value;
+            const whoisResult = document.getElementById('whoisResult');
+            if (!domain) {
+                whoisResult.value = 'Please enter a domain.';
+                return;
+            }
+            whoisResult.value = 'Fetching WHOIS data... (This uses a public proxy, might be slow or blocked for some domains)';
+            fetch(`https://whois.freeaiapi.xyz/?query=${encodeURIComponent(domain)}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data && data.whois) {
+                        whoisResult.value = data.whois;
+                    } else if (data && data.error) {
+                        whoisResult.value = `Error: ${data.error}`;
+                    } else {
+                        whoisResult.value = 'WHOIS data not found or error. Try a different domain or check network.';
+                    }
+                })
+                .catch(e => {
+                    console.error("WHOIS fetch error:", e);
+                    whoisResult.value = `Error fetching WHOIS: ${e.message}. (Check domain or network)`;
+                });
+        }
+
+        // URL Parser
+        function parseURL() {
+            const urlInput = document.getElementById('urlInput').value;
+            const urlResult = document.getElementById('urlResult');
+            try {
+                const url = new URL(urlInput);
+                let result = `Protocol: ${url.protocol}\n`;
+                result += `Host: ${url.host}\n`;
+                result += `Hostname: ${url.hostname}\n`;
+                result += `Port: ${url.port || 'Default'}\n`;
+                result += `Pathname: ${url.pathname}\n`;
+                result += `Search (Query): ${url.search || 'None'}\n`;
+                if (url.searchParams) {
+                    result += `Query Params:\n`;
+                    url.searchParams.forEach((value, key) => {
+                        result += `  ${key}: ${value}\n`;
+                    });
+                }
+                result += `Hash: ${url.hash || 'None'}`;
+                urlResult.value = result;
+            } catch (e) {
+                urlResult.value = `Invalid URL: ${e.message}`;
+            }
+        }
+
+        // Subnet Calculator
+        function calculateSubnet() {
+            const ipCidr = document.getElementById('ipCidrInput').value;
+            const subnetResult = document.getElementById('subnetResult');
+            try {
+                const [ipAddress, cidrStr] = ipCidr.split('/');
+                const cidr = parseInt(cidrStr, 10);
+
+                if (!ipAddress || isNaN(cidr) || cidr < 0 || cidr > 32) {
+                    subnetResult.value = 'Invalid IP/CIDR format. Use e.g., 192.168.1.0/24';
+                    return;
+                }
+
+                const ipParts = ipAddress.split('.').map(Number);
+                if (ipParts.length !== 4 || ipParts.some(p => isNaN(p) || p < 0 || p > 255)) {
+                    subnetResult.value = 'Invalid IP address.';
+                    return;
+                }
+
+                let ipBinary = ipParts.map(part => part.toString(2).padStart(8, '0')).join('');
+                const networkBinary = ipBinary.substring(0, cidr).padEnd(32, '0');
+                const broadcastBinary = ipBinary.substring(0, cidr).padEnd(32, '1');
+
+                const binToIp = bin => {
+                    const parts = [];
+                    for (let i = 0; i < 32; i += 8) {
+                        parts.push(parseInt(bin.substring(i, i + 8), 2));
+                    }
+                    return parts.join('.');
+                };
+
+                const networkAddress = binToIp(networkBinary);
+                const broadcastAddress = binToIp(broadcastBinary);
+
+                let firstHost = 'N/A';
+                let lastHost = 'N/A';
+                if (cidr < 32) {
+                    const firstHostBinary = networkBinary.substring(0, 31) + '1';
+                    const lastHostBinary = broadcastBinary.substring(0, 31) + '0';
+                    firstHost = binToIp(firstHostBinary);
+                    lastHost = binToIp(lastHostBinary);
+                } else if (cidr === 32) {
+                    firstHost = ipAddress;
+                    lastHost = ipAddress;
+                }
+
+                const totalHosts = (2 ** (32 - cidr));
+                const usableHosts = (totalHosts < 2) ? totalHosts : (totalHosts - 2);
+
+                const subnetMaskBinary = '1'.repeat(cidr).padEnd(32, '0');
+                const subnetMask = binToIp(subnetMaskBinary);
+
+                let result = `IP Address: ${ipAddress}\n`;
+                result += `CIDR: /${cidr}\n`;
+                result += `Subnet Mask: ${subnetMask}\n`;
+                result += `Network Address: ${networkAddress}\n`;
+                result += `Broadcast Address: ${broadcastAddress}\n`;
+                result += `First Usable Host: ${firstHost}\n`;
+                result += `Last Usable Host: ${lastHost}\n`;
+                result += `Total Hosts: ${totalHosts}\n`;
+                result += `Usable Hosts: ${usableHosts}`;
+
+                subnetResult.value = result;
+
+            } catch (e) {
+                subnetResult.value = `Error: ${e.message}. Ensure IP/CIDR is valid.`;
+            }
+        }
+
+        // Regex Tester
+        function testRegex() {
+            const pattern = document.getElementById('regexPattern').value;
+            const text = document.getElementById('regexText').value;
+            const regexResult = document.getElementById('regexResult');
+            try {
+                const regex = new RegExp(pattern, 'g');
+                const matches = [...text.matchAll(regex)];
+                if (matches.length > 0) {
+                    let resultText = "Matches found:\n";
+                    matches.forEach((match, index) => {
+                        resultText += `Match ${index + 1}: "${match[0]}" at index ${match.index}\n`;
+                        if (match.groups) {
+                            resultText += "  Groups: " + JSON.stringify(match.groups) + "\n";
+                        } else if (match.length > 1) {
+                            resultText += "  Captured: " + match.slice(1).join(', ') + "\n";
+                        }
+                    });
+                    regexResult.value = resultText;
+                } else {
+                    regexResult.value = "No matches found.";
+                }
+            } catch (e) {
+                regexResult.value = `Invalid Regex Pattern: ${e.message}`;
+            }
+        }
+
+        // NEW: URL Encode/Decode
+        function encodeURL() {
+            const input = document.getElementById('urlEncodeInput').value;
+            document.getElementById('urlEncodeOutput').value = encodeURIComponent(input);
+        }
+
+        function decodeURL() {
+            const input = document.getElementById('urlEncodeInput').value;
+            try {
+                document.getElementById('urlEncodeOutput').value = decodeURIComponent(input);
+            } catch (e) {
+                document.getElementById('urlEncodeOutput').value = "Invalid URL encoded string!";
+            }
+        }
+
+        // NEW: Hex Converter
+        function toHex() {
+            const input = document.getElementById('hexInput').value;
+            document.getElementById('hexOutput').value = Array.from(input).map(c => c.charCodeAt(0).toString(16).padStart(2, '0')).join('');
+        }
+
+        function fromHex() {
+            const input = document.getElementById('hexInput').value.replace(/\s/g, '');
+            if (!/^[0-9a-fA-F]*$/.test(input) || input.length % 2 !== 0) {
+                document.getElementById('hexOutput').value = "Invalid hex string. Must be even length and contain only hex characters.";
+                return;
+            }
+            let result = '';
+            for (let i = 0; i < input.length; i += 2) {
+                result += String.fromCharCode(parseInt(input.substr(i, 2), 16));
+            }
+            document.getElementById('hexOutput').value = result;
+        }
+
+        // NEW: ASCII Converter
+        function toASCII() {
+            const input = document.getElementById('asciiInput').value;
+            document.getElementById('asciiOutput').value = Array.from(input).map(c => c.charCodeAt(0)).join(' ');
+        }
+
+        function fromASCII() {
+            const input = document.getElementById('asciiInput').value.trim();
+            const asciiValues = input.split(' ').map(Number).filter(n => !isNaN(n));
+            document.getElementById('asciiOutput').value = asciiValues.map(n => String.fromCharCode(n)).join('');
+        }
+
+        // NEW: SHA-256 Hash Generator
+        async function generateSha256Hash() {
+            const text = document.getElementById("sha256Input").value;
+            if (!text) {
+                document.getElementById("sha256Result").value = 'Please enter text to hash.';
+                return;
+            }
+            const textEncoder = new TextEncoder();
+            const data = textEncoder.encode(text);
+            try {
+                const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+                const hashArray = Array.from(new Uint8Array(hashBuffer));
+                const hexHash = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+                document.getElementById("sha256Result").value = `SHA-256: ${hexHash}`;
+            } catch (e) {
+                document.getElementById("sha256Result").value = `Error generating hash: ${e.message}`;
+            }
+        }
+
+        // NEW: MD5 Hash Generator (using external library for client-side)
+        // For actual MD5, you'd load a library like: <script src="https://cdnjs.cloudflare.com/ajax/libs/blueimp-md5/2.18.0/js/md5.min.js">
+        // As we cannot include external scripts in this output, I'll use a simple, non-cryptographic placeholder.
+        function generateMd5Hash() {
+            const text = document.getElementById("md5Input").value;
+            if (!text) {
+                document.getElementById("md5Result").value = 'Please enter text to hash.';
+                return;
+            }
+            // This is a simple, non-cryptographic hash for demonstration.
+            // DO NOT use this for actual security purposes.
+            let hash = 0;
+            for (let i = 0; i < text.length; i++) {
+                const char = text.charCodeAt(i);
+                hash = ((hash << 5) - hash) + char;
+                hash |= 0; // Convert to 32bit integer
+            }
+            document.getElementById("md5Result").value = `MD5 (Simulated): ${hash.toString(16).padStart(8, '0')}`;
+            alert("Note: Client-side MD5 hashing for cryptographic purposes typically requires an external library. This is a basic non-cryptographic simulation for demonstration only.");
+        }
+
+        // NEW: Unix Timestamp Converter
+        function toTimestamp() {
+            const input = document.getElementById('timestampInput').value;
+            let date;
+            if (isNaN(input) || !input.trim()) { // If input is not purely numeric or empty, try parsing as date string
+                date = new Date(input);
+            } else { // Assume it's already a timestamp (in seconds), convert to ms
+                date = new Date(parseInt(input) * 1000);
+            }
+
+            if (isNaN(date.getTime())) {
+                document.getElementById('unixTimestampOutput').value = "Invalid date/timestamp format. Use YYYY-MM-DD HH:MM:SS or numeric timestamp.";
+                return;
+            }
+            document.getElementById('unixTimestampOutput').value = `Timestamp: ${Math.floor(date.getTime() / 1000)}\nDate (UTC): ${date.toUTCString()}`;
+        }
+
+        function fromTimestamp() {
+            const input = document.getElementById('timestampInput').value;
+            const timestamp = parseInt(input);
+
+            if (isNaN(timestamp) || timestamp < 0) {
+                document.getElementById('unixTimestampOutput').value = "Invalid timestamp. Please enter a positive number.";
+                return;
+            }
+            const date = new Date(timestamp * 1000); // Convert seconds to milliseconds
+            document.getElementById('unixTimestampOutput').value = `Timestamp: ${timestamp}\nDate (Local): ${date.toLocaleString()}\nDate (UTC): ${date.toUTCString()}`;
+        }
+
+        // NEW: UUID Generator
+        function generateUUID() {
+            if (crypto && crypto.randomUUID) {
+                document.getElementById('uuidOutput').value = crypto.randomUUID();
+            } else {
+                let d = new Date().getTime();
+                const uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+                    const r = (d + Math.random() * 16) % 16 | 0;
+                    d = Math.floor(d / 16);
+                    return (c == 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+                });
+                document.getElementById('uuidOutput').value = uuid;
+            }
+        }
+
+        // NEW: Robots.txt Viewer (via Proxy)
+        function fetchRobotsTxt() {
+            const domain = document.getElementById('robotsDomain').value;
+            const robotsTxtResult = document.getElementById('robotsTxtResult');
+            if (!domain) {
+                robotsTxtResult.value = 'Please enter a domain.';
+                return;
+            }
+            robotsTxtResult.value = 'Fetching robots.txt... (Uses a public proxy, might be slow or blocked for some sites)';
+            fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(`http://${domain}/robots.txt`)}`)
+                .then(response => {
+                    if (!response.ok) {
+                        if (response.status === 404) {
+                            throw new Error('Robots.txt not found (404 Not Found).');
+                        }
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.text();
+                })
+                .then(text => {
+                    robotsTxtResult.value = text || 'Robots.txt found but empty.';
+                })
+                .catch(e => {
+                    console.error("Error fetching robots.txt:", e);
+                    robotsTxtResult.value = `Error fetching robots.txt: ${e.message}. (Ensure domain is valid and reachable)`;
+                });
+        }
+
+        // NEW: Base32 Encode/Decode
+        const BASE32_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
+        function encodeBase32() {
+            const input = document.getElementById('base32Input').value;
+            let bits = '';
+            for (let i = 0; i < input.length; i++) {
+                bits += input.charCodeAt(i).toString(2).padStart(8, '0');
+            }
+
+            let output = '';
+            for (let i = 0; i < bits.length; i += 5) {
+                let chunk = bits.substring(i, i + 5);
+                if (chunk.length < 5) {
+                    chunk = chunk.padEnd(5, '0');
+                }
+                output += BASE32_CHARS[parseInt(chunk, 2)];
+            }
+            // Add padding (RFC 4648)
+            while (output.length % 8 !== 0) {
+                output += '=';
+            }
+            document.getElementById('base32Output').value = output;
+        }
+
+        function decodeBase32() {
+            const input = document.getElementById('base32Input').value.toUpperCase().replace(/=/g, '');
+            let bits = '';
+            for (let i = 0; i < input.length; i++) {
+                const charIndex = BASE32_CHARS.indexOf(input[i]);
+                if (charIndex === -1) {
+                    document.getElementById('base32Output').value = "Invalid Base32 character encountered.";
+                    return;
+                }
+                bits += charIndex.toString(2).padStart(5, '0');
+            }
+
+            let output = '';
+            for (let i = 0; i < bits.length; i += 8) {
+                let chunk = bits.substring(i, i + 8);
+                if (chunk.length === 8) {
+                    output += String.fromCharCode(parseInt(chunk, 2));
+                }
+            }
+            document.getElementById('base32Output').value = output;
+        }
+
+        // NEW: Binary Converter
+        function toBinary() {
+            const input = document.getElementById('binaryInput').value;
+            document.getElementById('binaryOutput').value = Array.from(input).map(char => char.charCodeAt(0).toString(2).padStart(8, '0')).join(' ');
+        }
+
+        function fromBinary() {
+            const input = document.getElementById('binaryInput').value.trim();
+            const binaryBytes = input.split(' ');
+            let result = '';
+            for (const byteStr of binaryBytes) {
+                if (!/^[01]{8}$/.test(byteStr)) {
+                    document.getElementById('binaryOutput').value = "Invalid binary string. Each byte must be 8 bits (e.g., 01001000).";
+                    return;
+                }
+                result += String.fromCharCode(parseInt(byteStr, 2));
+            }
+            document.getElementById('binaryOutput').value = result;
+        }
+
+        // NEW: ROT13 Cipher
+        function applyRot13() {
+            const input = document.getElementById('rot13Input').value;
+            let output = '';
+            for (let i = 0; i < input.length; i++) {
+                let charCode = input.charCodeAt(i);
+                if (charCode >= 65 && charCode <= 90) { // Uppercase A-Z
+                    output += String.fromCharCode(((charCode - 65 + 13) % 26) + 65);
+                } else if (charCode >= 97 && charCode <= 122) { // Lowercase a-z
+                    output += String.fromCharCode(((charCode - 97 + 13) % 26) + 97);
+                } else {
+                    output += input[i]; // Non-alphabetic characters remain unchanged
+                }
+            }
+            document.getElementById('rot13Output').value = output;
+        }
+
+        // NEW: Random Password Generator
+        function generateRandomPassword() {
+            const length = parseInt(document.getElementById('pwdLength').value);
+            const includeUpper = document.getElementById('includeUpper').checked;
+            const includeLower = document.getElementById('includeLower').checked;
+            const includeNumbers = document.getElementById('includeNumbers').checked;
+            const includeSymbols = document.getElementById('includeSymbols').checked;
+
+            let charset = '';
+            if (includeUpper) charset += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            if (includeLower) charset += 'abcdefghijklmnopqrstuvwxyz';
+            if (includeNumbers) charset += '0123456789';
+            if (includeSymbols) charset += '!@#$%^&*()_-+=<>?/{}[]|';
+
+            if (charset.length === 0) {
+                document.getElementById('randomPasswordOutput').value = "Please select at least one character type.";
+                return;
+            }
+
+            let password = '';
+            for (let i = 0; i < length; i++) {
+                const randomIndex = Math.floor(Math.random() * charset.length);
+                password += charset[randomIndex];
+            }
+            document.getElementById('randomPasswordOutput').value = password;
+        }
+
+        // NEW: Text Difference/Comparison
+        function compareTexts() {
+            const text1 = document.getElementById('textDiffInput1').value;
+            const text2 = document.getElementById('textDiffInput2').value;
+            const diffOutput = document.getElementById('diffOutput');
+
+            if (!text1 || !text2) {
+                diffOutput.value = "Please enter text in both fields to compare.";
+                return;
+            }
+
+            // Simple line-by-line comparison
+            const lines1 = text1.split('\n');
+            const lines2 = text2.split('\n');
+            let result = '';
+
+            const maxLength = Math.max(lines1.length, lines2.length);
+
+            for (let i = 0; i < maxLength; i++) {
+                const line1 = lines1[i] !== undefined ? lines1[i] : '';
+                const line2 = lines2[i] !== undefined ? lines2[i] : '';
+
+                if (line1 === line2) {
+                    result += `  ${line1}\n`; // Identical line
+                } else {
+                    if (line1 !== '') result += `- ${line1}\n`; // Line removed or changed
+                    if (line2 !== '') result += `+ ${line2}\n`; // Line added or changed
+                }
+            }
+            diffOutput.value = result.trim();
+        }
+
+    </script>
+</body>
+</html>

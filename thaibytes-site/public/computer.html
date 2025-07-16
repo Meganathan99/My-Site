@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Computer Services - THAI BYTES</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css">
+  <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/tsparticles@2/tsparticles.bundle.min.js"></script>
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow-x: hidden;
+      background-color: #000;
+    }
+    .video-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100vh;
+      width: 100vw;
+      object-fit: cover;
+      z-index: -20;
+    }
+    .overlay-glow {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+      z-index: -10;
+      background: linear-gradient(120deg, rgba(0,255,255,0.06), rgba(0,0,0,0.8));
+      animation: glowBg 10s ease-in-out infinite;
+    }
+    @keyframes glowBg {
+      0%, 100% { opacity: 0.6; }
+      50% { opacity: 0.75; }
+    }
+    body.fade-out {
+      opacity: 0;
+      transition: opacity 0.6s ease;
+    }
+  </style>
+</head>
+<body class="text-white font-sans relative overflow-x-hidden overflow-y-auto">
+
+  <!-- 🔵 Background video -->
+  <video autoplay muted loop playsinline class="video-bg">
+    <!-- 🔁 Replace with your own video path below -->
+    <source src="videos/cbg.mp4" type="video/mp4" />
+     Your browser does not support the video tag.
+  </video>
+
+  <div id="particles-js" class="absolute inset-0 -z-10"></div>
+  <div class="overlay-glow"></div>
+
+  <!-- 💻 Main Content -->
+  <div class="max-w-6xl mx-auto px-4 md:px-12 py-6 md:py-12 relative z-10 min-h-screen">
+    <h1 class="text-4xl md:text-6xl font-extrabold text-center text-cyan-400">
+      💻 Computer Services
+    </h1>
+    <div class="mx-auto w-2/3 h-1 bg-cyan-500 animate-pulse my-6 rounded-full"></div>
+
+    <!-- 🔧 Services List -->
+    <ul class="list-disc pl-6 pr-4 md:pl-10 text-cyan-200 text-base md:text-2xl space-y-6 md:space-y-8 leading-relaxed break-words">
+      <li>🛠️ <strong class="text-cyan-300">Custom PC Builds</strong> – Budget, Gaming, Editing rigs, Workstations</li>
+      <li>💽 <strong class="text-cyan-300">OS Installation</strong> – Windows/Linux/MacOS, dual boot – ₹300+</li>
+      <li>🧰 <strong class="text-cyan-300">Software Installation</strong> – Office, Photoshop, Antivirus – ₹250+</li>
+      <li>🔧 <strong class="text-cyan-300">Hardware Repairs</strong> – SSD/RAM upgrades, fan servicing – ₹500+</li>
+      <li>💾 <strong class="text-cyan-300">Data Recovery</strong> – USB, HDD, SD card, corrupted partitions – ₹700+</li>
+      <li>🖥️ <strong class="text-cyan-300">System Cleanup</strong> – Fan clean, paste replace, boot speed – ₹300+</li>
+      <li>⚙️ <strong class="text-cyan-300">BIOS/Firmware Updates</strong> – Motherboard & setup – ₹400+</li>
+      <li>🌐 <strong class="text-cyan-300">Internet Fix</strong> – DNS, drivers, browser repair – ₹250+</li>
+      <li>🛡️ <strong class="text-cyan-300">Virus Removal</strong> – Deep clean with protection – ₹300+</li>
+      <li>🔍 <strong class="text-cyan-300">System Diagnostic</strong> – CPU/GPU/RAM health report – ₹400+</li>
+      <li>🖨️ <strong class="text-cyan-300">Peripheral Setup</strong> – Printer, webcam, scanner – ₹300+</li>
+      <li>🧠 <strong class="text-cyan-300">Consultation</strong> – PC part selection, budget advice – ₹0–200</li>
+      <li>📦 <strong class="text-cyan-300">Remote Help</strong> – Quick fixes via online – ₹200+</li>
+      <li>🧪 <strong class="text-cyan-300">Stress Test</strong> – GPU/CPU benchmarking – ₹500+</li>
+      <li>🔌 <strong class="text-cyan-300">Power Supply</strong> – SMPS, surge protection – ₹300+</li>
+      <li>📡 <strong class="text-cyan-300">Wi-Fi Tuning</strong> – Range boost, router setup – ₹250+</li>
+      <li>🧩 <strong class="text-cyan-300">Driver Issues</strong> – Missing or conflicting drivers – ₹200+</li>
+      <li>🧮 <strong class="text-cyan-300">Format & Setup</strong> – Clean OS with all apps – ₹500+</li>
+      <li>🧳 <strong class="text-cyan-300">Old Laptop Boost</strong> – Lightweight OS, SSD, RAM tips – ₹300+</li>
+      <li>🌐 <strong class="text-cyan-300">Activation Help</strong> – Windows, Office, Antivirus – ₹300+</li>
+      <li>🗂️ <strong class="text-cyan-300">File Organization</strong> – Clean & sort messy folders – ₹250+</li>
+    </ul>
+  </div>
+
+  <!-- 📞 CTA Button -->
+  <a href="https://wa.me/9585540762" class="fixed bottom-6 right-6 bg-cyan-500 text-white text-xl font-bold px-6 py-3 rounded-full shadow-lg hover:bg-cyan-600 transition animate-pulse z-50">
+    📞 Book Now
+  </a>
+
+  <!-- ⚙️ Scripts -->
+  <script>
+    AOS.init({ once: true, duration: 800 });
+
+    tsParticles.load("particles-js", {
+      fullScreen: { enable: false },
+      background: { color: "transparent" },
+      particles: {
+        number: { value: 60 },
+        size: { value: 2.5 },
+        move: { speed: 0.6 },
+        color: { value: "#22d3ee" },
+        links: { enable: true, color: "#22d3ee", distance: 120 }
+      }
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+      const links = document.querySelectorAll("a");
+      links.forEach(link => {
+        link.addEventListener("click", e => {
+          if (link.href && !link.href.startsWith("#")) {
+            e.preventDefault();
+            document.body.classList.add("fade-out");
+            setTimeout(() => {
+              window.location = link.href;
+            }, 500);
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Thai Bytes - PC Builder</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      background: #0e0e0e;
+      color: #fff;
+      font-family: 'Segoe UI', sans-serif;
+      padding: 20px;
+    }
+    h1 {
+      color: #f5b841;
+      text-align: center;
+    }
+    .part {
+      margin-bottom: 20px;
+      padding: 15px;
+      background: #1a1a1a;
+      border-radius: 8px;
+      border: 1px solid #333;
+    }
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: bold;
+    }
+    select {
+      width: 100%;
+      padding: 10px;
+      border-radius: 5px;
+      border: none;
+      font-size: 16px;
+    }
+    img {
+      width: 100px;
+      margin-bottom: 10px;
+      border-radius: 6px;
+    }
+    #total {
+      font-size: 1.5em;
+      color: #f5b841;
+      margin-top: 30px;
+      text-align: center;
+    }
+    .whatsapp-button {
+      display: block;
+      margin: 30px auto;
+      background: #25D366;
+      color: white;
+      padding: 14px 20px;
+      text-align: center;
+      width: max-content;
+      font-size: 16px;
+      border-radius: 8px;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+
+<h1>🛠️ Build Your PC</h1>
+
+<div class="part fade-in">
+  <label for="cpu">Processor (CPU)</label>
+  <select id="cpu" onchange="update()">
+    <option value="">Select CPU</option>
+    <option value="15000">Intel i5 - ₹15000</option>
+    <option value="18000">Ryzen 5 - ₹18000</option>
+  </select>
+</div>
+
+<div class="part fade-in">
+  <label for="motherboard">Motherboard</label>
+  <select id="motherboard" onchange="update()">
+    <option value="">Select Motherboard</option>
+    <option value="5500" data-brand="ryzen">Gigabyte B550M (AMD) - ₹5500</option>
+    <option value="7500" data-brand="intel">ASUS TUF B660M (Intel) - ₹7500</option>
+    <option value="9500" data-brand="intel">MSI Z690 Pro (Intel) - ₹9500</option>
+    <option value="6700" data-brand="ryzen">ASRock B450M (AMD) - ₹6700</option>
+  </select>
+</div>
+
+<div class="part fade-in">
+  <label for="gpu">Graphics Card (GPU)</label>
+  <select id="gpu" onchange="update()">
+    <option value="">Select GPU</option>
+    <option value="25000">NVIDIA RTX 3050 - ₹25000</option>
+    <option value="35000">NVIDIA RTX 3060 - ₹35000</option>
+  </select>
+</div>
+
+<div class="part fade-in">
+  <label for="ram">RAM</label>
+  <select id="ram" onchange="update()">
+    <option value="">Select RAM</option>
+    <option value="3000">16GB DDR4 - ₹3000</option>
+    <option value="4500">32GB DDR4 - ₹4500</option>
+  </select>
+</div>
+
+<div class="part fade-in">
+  <label for="ssd">Storage (SSD)</label>
+  <select id="ssd" onchange="update()">
+    <option value="">Select SSD</option>
+    <option value="2500">256GB NVMe - ₹2500</option>
+    <option value="4000">512GB NVMe - ₹4000</option>
+  </select>
+</div>
+
+<div class="part fade-in">
+  <label for="psu">Power Supply (PSU)</label>
+  <select id="psu" onchange="update()">
+    <option value="">Select PSU</option>
+    <option value="2000">550W Bronze - ₹2000</option>
+    <option value="3000">650W Gold - ₹3000</option>
+  </select>
+</div>
+
+<div class="part fade-in">
+  <label for="cabinet">Cabinet</label>
+  <select id="cabinet" onchange="update()">
+    <option value="">Select Cabinet</option>
+    <option value="2200">RGB Mid Tower - ₹2200</option>
+    <option value="3500">Cooler Master - ₹3500</option>
+  </select>
+</div>
+
+<div class="part fade-in">
+  <label for="monitor">Monitor</label>
+  <select id="monitor" onchange="update()">
+    <option value="">Select Monitor</option>
+    <option value="6000">24" LED - ₹6000</option>
+    <option value="9500">27" IPS FHD - ₹9500</option>
+  </select>
+</div>
+
+<div class="part fade-in">
+  <label for="keyboard">Keyboard</label>
+  <select id="keyboard" onchange="update()">
+    <option value="">Select Keyboard</option>
+    <option value="700">Basic USB Keyboard - ₹700</option>
+    <option value="1500">Mechanical RGB Keyboard - ₹1500</option>
+  </select>
+</div>
+
+<div class="part fade-in">
+  <label for="mouse">Mouse</label>
+  <select id="mouse" onchange="update()">
+    <option value="">Select Mouse</option>
+    <option value="500">Optical USB Mouse - ₹500</option>
+    <option value="1200">Gaming Mouse - ₹1200</option>
+  </select>
+</div>
+
+<div class="part fade-in">
+  <label for="os">Operating System</label>
+  <select id="os" onchange="update()">
+    <option value="">Select OS</option>
+    <option value="0">Free Linux - ₹0</option>
+    <option value="1200">Windows 10 Pro Activated - ₹1200</option>
+  </select>
+</div>
+
+<h2 id="total">Total: ₹0</h2>
+
+<a href="#" id="whatsapp" class="whatsapp-button" target="_blank">Order on WhatsApp</a>
+
+<!-- Floating Chatbot -->
+<div id="chatbot-container" class="fixed bottom-20 right-5 bg-white text-black w-72 rounded-lg shadow-lg hidden z-50">
+  <div class="bg-cyan-500 text-white p-3 rounded-t-lg font-bold">🤖 Thai Chatbot</div>
+  <div class="p-4 text-sm">
+    👋 Need help building your PC?<br>Ask us or click below.
+  </div>
+  <div class="p-3 text-right">
+    <a href="https://wa.me/9585540762" target="_blank" class="text-cyan-500 font-semibold">Chat on WhatsApp</a>
+  </div>
+</div>
+
+<button onclick="toggleChat()" class="fixed bottom-5 right-5 bg-cyan-500 hover:bg-cyan-600 text-white p-4 rounded-full shadow-lg z-50">
+  💬
+</button>
+
+<script>
+  function update() {
+    const components = [
+      'cpu', 'gpu', 'ram', 'ssd', 'psu',
+      'cabinet', 'motherboard', 'monitor',
+      'keyboard', 'mouse', 'os'
+    ];
+
+    let total = 0;
+    let message = "🖥️ *Thai Bytes PC Build Order*%0A%0A";
+
+    components.forEach(id => {
+      const select = document.getElementById(id);
+      const val = select?.value;
+
+      if (val) {
+        const price = parseInt(val);
+        const label = select.options[select.selectedIndex].text;
+        total += price;
+        message += `🔧 ${label}%0A`;
+      }
+    });
+
+    message += `%0A🧾 *Total Price:* ₹${total}`;
+    document.getElementById('total').innerText = "Total: ₹" + total;
+
+    const whatsappNumber = "9585540762";
+    const whatsappURL = "https://wa.me/91" + whatsappNumber + "?text=" + encodeURIComponent(message);
+    document.getElementById('whatsapp').href = whatsappURL;
+
+    filterMotherboards();
+  }
+
+  function filterMotherboards() {
+    const cpuSelect = document.getElementById('cpu');
+    const cpuText = cpuSelect.options[cpuSelect.selectedIndex]?.text.toLowerCase();
+    const motherboardSelect = document.getElementById('motherboard');
+    const options = motherboardSelect.querySelectorAll('option');
+
+    options.forEach(opt => {
+      const brand = opt.getAttribute('data-brand');
+      if (!brand || (cpuText && cpuText.includes(brand))) {
+        opt.hidden = false;
+      } else {
+        opt.hidden = true;
+      }
+    });
+
+    if (motherboardSelect.value && motherboardSelect.options[motherboardSelect.selectedIndex].hidden) {
+      motherboardSelect.value = "";
+    }
+  }
+
+  function toggleChat() {
+    document.getElementById('chatbot-container').classList.toggle('hidden');
+  }
+</script>
+
+</body>
+</html>

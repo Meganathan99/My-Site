@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>THAI AI</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <style>
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-thumb { background: #888; border-radius: 10px; }
+    .typewriter { white-space: pre-wrap; word-wrap: break-word; }
+  </style>
+</head>
+<body class="bg-gray-900 text-white h-screen flex flex-col">
+
+  <!-- Header -->
+  <div class="bg-black p-4 flex justify-between items-center">
+    <h1 class="text-xl font-bold">🤖 THAI AI Assistant</h1>
+    <button id="voiceToggle" class="bg-purple-500 px-3 py-1 rounded">🔇 Voice OFF</button>
+  </div>
+
+  <!-- Chat -->
+  <div id="chatBox" class="flex-1 p-4 overflow-y-auto space-y-3"></div>
+
+  <!-- Input -->
+  <div class="p-3 bg-black flex gap-2">
+    <input id="userInput" type="text" placeholder="Ask in Tamil or English..." class="flex-1 p-2 rounded bg-gray-800 text-white" />
+    <button onclick="askTHAI()" class="bg-green-600 px-4 py-2 rounded">Ask</button>
+  </div>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAmBGnTLSBnEuT4GUMBzX7Z_K7lAEDjx2c",
+      authDomain: "thai-bytes.firebaseapp.com",
+      projectId: "thai-bytes",
+      storageBucket: "thai-bytes.appspot.com",
+      messagingSenderId: "212605449568",
+      appId: "1:212605449568:web:8e170a40f1907d33cf1a05"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    const chatBox = document.getElementById("chatBox");
+    const inputBox = document.getElementById("userInput");
+    const voiceBtn = document.getElementById("voiceToggle");
+
+    let voiceEnabled = false;
+
+    voiceBtn.onclick = () => {
+      voiceEnabled = !voiceEnabled;
+      voiceBtn.innerText = voiceEnabled ? "🔊 Voice ON" : "🔇 Voice OFF";
+      voiceBtn.classList.toggle("bg-purple-500", !voiceEnabled);
+      voiceBtn.classList.toggle("bg-green-600", voiceEnabled);
+    };
+
+    function appendChat(text, sender = 'user') {
+      const msg = document.createElement('div');
+      msg.className = sender === 'user'
+        ? "text-right bg-blue-700 max-w-[80%] ml-auto p-2 rounded-xl"
+        : "text-left bg-gray-700 max-w-[80%] mr-auto p-2 rounded-xl flex justify-between items-center";
+
+      if (sender === 'bot' && voiceEnabled) {
+        msg.innerHTML = `<span class="typewriter"></span><button onclick="speakOut(\`${text.replace(/`/g, '\\`')}\`)" class="ml-2 text-yellow-400">🔊</button>`;
+        chatBox.appendChild(msg);
+        chatBox.scrollTop = chatBox.scrollHeight;
+        typeWriter(text, msg.querySelector(".typewriter"));
+      } else {
+        msg.innerText = text;
+        chatBox.appendChild(msg);
+        chatBox.scrollTop = chatBox.scrollHeight;
+      }
+    }
+
+    function typeWriter(text, element, i = 0) {
+      if (i < text.length) {
+        element.innerHTML += text.charAt(i);
+        chatBox.scrollTop = chatBox.scrollHeight;
+        setTimeout(() => typeWriter(text, element, i + 1), 20);
+      }
+    }
+
+    async function askTHAI() {
+      const q = inputBox.value.trim();
+      if (!q) return;
+      appendChat(q, 'user');
+      inputBox.value = "";
+
+      const loading = document.createElement('div');
+      loading.className = "text-left bg-gray-700 max-w-[80%] mr-auto p-2 rounded-xl animate-pulse";
+      loading.innerText = "⌛ Typing...";
+      chatBox.appendChild(loading);
+      chatBox.scrollTop = chatBox.scrollHeight;
+
+      const lowerQ = q.toLowerCase();
+      let a = await getFromFirebase(lowerQ);
+
+      // Check for error code like 0x00000709
+      if (!a) {
+        const hexMatch = lowerQ.match(/0x[0-9a-f]+/i);
+        if (hexMatch) a = await getFromFirebase(hexMatch[0]);
+      }
+
+      // Check for error keyword like ERROR_ACCESS_DENIED
+      if (!a) {
+        const errMatch = lowerQ.match(/error_[a-z0-9_]+/i);
+        if (errMatch) a = await getFromFirebase(errMatch[0]);
+      }
+
+      // Fallback: DuckDuckGo
+      if (!a) a = await searchDuckDuckGo(lowerQ);
+
+      // Fallback: Gemini (Optional)
+      if (!a) a = await askGemini(lowerQ);
+
+      // Final fallback message
+      if (!a) {
+        a = "மன்னிக்கவும், இந்த கேள்விக்கு தற்போது பதில் இல்லை. தவிர்க்க முடியாத குறைபாடு இருக்கலாம். தயவு செய்து error code மட்டும் கொடுத்து மீண்டும் முயற்சிக்கவும்.";
+      }
+
+      loading.remove();
+      appendChat(a, 'bot');
+      if (voiceEnabled) speakOut(a);
+      saveToLog(lowerQ, a);
+    }
+
+    async function getFromFirebase(q) {
+      try {
+        const doc = await db.collection("thai_answers").doc(q).get();
+        return doc.exists ? doc.data().answer : null;
+      } catch (e) {
+        console.error("Firebase read error:", e);
+        return null;
+      }
+    }
+
+    async function saveToLog(q, a) {
+      try {
+        await db.collection("thai_logs").add({
+          question: q,
+          answer: a,
+          time: firebase.firestore.FieldValue.serverTimestamp()
+        });
+      } catch (e) {
+        console.error("Log save error:", e);
+      }
+    }
+
+    async function searchDuckDuckGo(q) {
+      try {
+        const res = await fetch(`https://api.duckduckgo.com/?q=${encodeURIComponent(q)}&format=json&no_redirect=1&no_html=1&t=thai-ai`);
+        const data = await res.json();
+        if (data?.AbstractText) return `${data.AbstractText} (via DuckDuckGo)`;
+      } catch (e) {
+        console.error("DuckDuckGo error:", e);
+      }
+      return null;
+    }
+
+    async function askGemini(q) {
+      try {
+        const res = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=YOUR_GEMINI_API_KEY", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ contents: [{ parts: [{ text: q }] }] })
+        });
+        const data = await res.json();
+        return data?.candidates?.[0]?.content?.parts?.[0]?.text || null;
+      } catch (e) {
+        console.error("Gemini error:", e);
+        return null;
+      }
+    }
+
+    function speakOut(text) {
+      const synth = window.speechSynthesis;
+      const utter = new SpeechSynthesisUtterance(text);
+      utter.lang = /[\u0B80-\u0BFF]/.test(text) ? "ta-IN" : "en-US";
+      synth.speak(utter);
+    }
+  </script>
+</body>
+</html>

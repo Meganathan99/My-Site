@@ -1,0 +1,165 @@
+/* ========== GLOBAL RESET ========== */
+body {
+  font-family: 'Segoe UI', sans-serif;
+  margin: 0;
+  padding: 0;
+  background: #0e0e0e;
+  color: #f0f0f0;
+}
+
+a {
+  color: #f5b841;
+  text-decoration: none;
+}
+
+/* ========== HEADER ========== */
+header {
+  background: #000000;
+  color: #f5b841;
+  text-align: center;
+  padding: 20px;
+  border-bottom: 2px solid #f5b841;
+}
+nav a {
+  color: #f5b841;
+  margin: 0 12px;
+  font-weight: bold;
+}
+nav a:hover {
+  text-decoration: underline;
+}
+
+/* ========== HERO ========== */
+<style>
+  #hero img {
+    width: 100%;
+    max-width: 400px; /* 👈 Adjust this size as needed */
+    height: auto;
+    display: block;
+    margin: 0 auto;
+    border-radius: 10px; /* Optional for style */
+  }
+</style>
+.hero {
+  background: radial-gradient(circle at top right, #1a1a1a, #000);
+  color: #fff;
+  text-align: center;
+  padding: 20px 20px 20px;
+}
+.hero h2 {
+  font-size: 2.5em;
+}
+.cta {
+  background: #f5b841;
+  color: #000;
+  font-weight: bold;
+  padding: 12px 20px;
+  border-radius: 6px;
+  display: inline-block;
+  margin-top: 20px;
+}
+.cta:hover {
+  background: #ffcb3b;
+}
+
+/* ========== SECTION LAYOUT ========== */
+section {
+  padding: 50px 20px;
+  max-width: 960px;
+  margin: auto;
+}
+section h2 {
+  color: #f5b841;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+/* ========== SERVICES GRID ========== */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+}
+.grid div {
+  background: #1a1a1a;
+  padding: 20px;
+  border-radius: 8px;
+  border: 1px solid #444;
+  box-shadow: 0 0 8px rgba(245, 184, 65, 0.1);
+}
+.grid span {
+  color: #ccc;
+  font-size: 0.95em;
+}
+
+/* ========== GALLERY ========== */
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+}
+.gallery-grid img {
+  width: 100%;
+  border-radius: 8px;
+  box-shadow: 0 0 12px rgba(255, 204, 0, 0.4);
+  transition: transform 0.3s ease;
+}
+.gallery-grid img:hover {
+  transform: scale(1.05);
+}
+
+/* ========== PROCESS LIST ========== */
+ol {
+  background: #1c1c1c;
+  padding: 20px;
+  border-left: 4px solid #f5b841;
+  border-radius: 8px;
+}
+ol li {
+  margin-bottom: 12px;
+  font-size: 1.05em;
+}
+
+/* ========== CONTACT SECTION ========== */
+iframe {
+  border: none;
+  border-radius: 8px;
+  margin-top: 20px;
+}
+
+/* ========== FOOTER ========== */
+footer {
+  background: #000000;
+  color: #f5b841;
+  text-align: center;
+  padding: 20px;
+  font-size: 0.9em;
+  margin-top: 40px;
+}
+
+/* ========== WHATSAPP FLOAT ========== */
+.whatsapp-float {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: #25D366;
+  color: white;
+  font-size: 24px;
+  padding: 12px 16px;
+  border-radius: 50%;
+  box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+  z-index: 999;
+  text-decoration: none;
+}
+
+/* ========== MEDIA RESPONSIVE ========== */
+@media (max-width: 600px) {
+  .hero h2 {
+    font-size: 1.8em;
+  }
+  nav a {
+    display: inline-block;
+    margin: 5px;
+  }
+}
+

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Service Ticket - THAI BYTES</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 text-black">
+  <header class="bg-yellow-400 p-4 shadow-md text-center">
+    <h1 class="text-3xl font-bold">🛠️ Raise a Service Ticket</h1>
+  </header>
+
+  <div class="max-w-3xl mx-auto mt-8 bg-white p-6 rounded-xl shadow-md">
+    <form action="https://docs.google.com/forms/d/e/EXAMPLE_FORM_ID/formResponse" method="POST">
+      <div class="grid md:grid-cols-2 gap-6">
+        <input name="entry.211" type="text" placeholder="Your Name" class="w-full border px-4 py-2 rounded" required>
+        <input name="entry.212" type="tel" placeholder="Mobile Number" class="w-full border px-4 py-2 rounded" required>
+        <select name="entry.213" class="w-full border px-4 py-2 rounded" required>
+          <option value="">-- Select Device --</option>
+          <option>Desktop</option>
+          <option>Laptop</option>
+          <option>Mobile</option>
+          <option>Router</option>
+          <option>Other</option>
+        </select>
+        <input name="entry.214" type="text" placeholder="Issue Type" class="w-full border px-4 py-2 rounded" required>
+        <textarea name="entry.215" rows="3" placeholder="Describe the issue..." class="w-full border px-4 py-2 rounded md:col-span-2" required></textarea>
+      </div>
+      <div class="text-center mt-6">
+        <button type="submit" class="bg-yellow-500 text-black px-6 py-3 rounded-full hover:bg-yellow-600 transition">Submit Ticket</button>
+      </div>
+    </form>
+  </div>
+</body>
+</html>
