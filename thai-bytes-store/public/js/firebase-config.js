@@ -1,11 +1,6 @@
 // Replace with your Firebase config
 const firebaseConfig = {
-  apiKey: "AIzaSyBw2hTfX-ABycqQy_iFsg-_m5HFhJe3KNk",
-  authDomain: "thaibytes-store.firebaseapp.com",
-  projectId: "thaibytes-store.firebaseapp.com",
-  storageBucket: "thaibytes-store.firebasestorage.app",
-  messagingSenderId: "941782779939",
-  appId: "1:941782779939:web:df3ddcfa6a1964713b4996"
+  
 };
 
 firebase.initializeApp(firebaseConfig);
